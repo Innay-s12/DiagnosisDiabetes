@@ -1,0 +1,1597 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Rekomendasi - Sistem Diabetes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ===== VARIABLES ===== */
+        :root {
+            --primary: #1e88e5;
+            --primary-dark: #1565c0;
+            --primary-light: #64b5f6;
+            --accent: #ff9800;
+            --light: #f5f5f5;
+            --dark: #333;
+            --gray: #e0e0e0;
+            --gray-dark: #9e9e9e;
+            --success: #4caf50;
+            --warning: #ff9800;
+            --danger: #f44336;
+            --white: #ffffff;
+            --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* ===== RESET & BASE STYLES ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        /* ===== LAYOUT ===== */
+        .admin-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(to bottom, var(--primary), var(--primary-dark));
+            color: var(--white);
+            box-shadow: var(--shadow);
+            z-index: 100;
+            transition: all 0.3s;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-header h2 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .sidebar-header p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .sidebar-menu {
+            padding: 15px 0;
+        }
+
+        .menu-item {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: var(--white);
+        }
+
+        .menu-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .menu-item.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-left: 4px solid var(--accent);
+        }
+
+        .menu-item i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .topbar {
+            background-color: var(--white);
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            z-index: 99;
+        }
+
+        .topbar h1 {
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-info div:first-child {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+            background-color: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .content {
+            padding: 25px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        /* ===== CARDS ===== */
+        .card {
+            background-color: var(--white);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 15px 20px;
+            background-color: var(--primary);
+            color: var(--white);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-header h3 {
+            font-size: 1.2rem;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        /* ===== STATS CARDS ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: var(--white);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            transition: transform 0.3s ease;
+            border-left: 4px solid;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 1.5rem;
+        }
+
+        .stat-info h3 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+            color: var(--dark);
+        }
+
+        .stat-info p {
+            color: var(--gray-dark);
+            font-size: 0.9rem;
+        }
+
+        /* ===== TABLES ===== */
+        .table-container {
+            overflow-x: auto;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--white);
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--gray);
+        }
+
+        th {
+            background-color: var(--primary-light);
+            color: var(--dark);
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+
+        tr:hover {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn i {
+            margin-right: 5px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-success {
+            background-color: var(--success);
+            color: var(--white);
+        }
+
+        .btn-warning {
+            background-color: var(--warning);
+            color: var(--white);
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            color: var(--white);
+        }
+
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 0.85rem;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 5px;
+        }
+
+        /* ===== SEARCH & FILTERS ===== */
+        .filters-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .search-box {
+            position: relative;
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .search-box input {
+            padding: 10px 15px 10px 40px;
+            border: 1px solid var(--gray);
+            border-radius: 4px;
+            width: 100%;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-dark);
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-group select {
+            padding: 10px;
+            border: 1px solid var(--gray);
+            border-radius: 4px;
+            min-width: 150px;
+        }
+
+        /* ===== MODAL STYLES ===== */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: var(--white);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            padding: 20px;
+            background-color: var(--primary);
+            color: var(--white);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 1.3rem;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--gray);
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(30, 136, 229, 0.2);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--gray);
+        }
+
+        /* ===== LOADING & STATES ===== */
+        .loading-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--gray);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .empty-state, .error-state {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .empty-state i, .error-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* ===== BADGES ===== */
+        .badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: white !important;
+        }
+
+        .badge-success {
+            background-color: var(--success);
+        }
+
+        .badge-warning {
+            background-color: var(--warning);
+        }
+
+        .badge-danger {
+            background-color: var(--danger);
+        }
+
+        .badge-info {
+            background-color: var(--primary);
+        }
+
+        /* ===== TOAST NOTIFICATION ===== */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.3s ease;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .toast.success {
+            background-color: var(--success);
+        }
+
+        .toast.error {
+            background-color: var(--danger);
+        }
+
+        .toast.warning {
+            background-color: var(--warning);
+        }
+
+        /* ===== RECOMMENDATION CARDS ===== */
+        .recommendation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .recommendation-card {
+            background: var(--white);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            border-left: 4px solid;
+            transition: all 0.3s ease;
+        }
+
+        .recommendation-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .recommendation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .recommendation-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .recommendation-title {
+            flex: 1;
+        }
+
+        .recommendation-title h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--dark);
+        }
+
+        .recommendation-category {
+            font-size: 0.8rem;
+            color: var(--gray-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .recommendation-description {
+            color: var(--gray-dark);
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        .recommendation-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 15px;
+            border-top: 1px solid var(--gray);
+        }
+
+        /* ===== VIEW TOGGLE ===== */
+        .view-toggle {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .view-btn {
+            padding: 8px 16px;
+            border: 1px solid var(--gray);
+            background: var(--white);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .view-btn.active {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 992px) {
+            .admin-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+            }
+            
+            .sidebar-menu {
+                display: flex;
+                overflow-x: auto;
+            }
+            
+            .menu-item {
+                white-space: nowrap;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .topbar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .user-info {
+                margin-top: 0;
+            }
+            
+            .card-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .filters-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .filter-group {
+                flex-direction: column;
+            }
+            
+            .recommendation-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .view-toggle {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>Admin Diabetes</h2>
+                <p>Sistem Manajemen Data</p>
+            </div>
+            <div class="sidebar-menu">
+                <a href="admin.html" class="menu-item">
+                    <i class="fas fa-chart-bar"></i> Dashboard
+                </a>
+                <a href="pengguna.html" class="menu-item">
+                    <i class="fas fa-users"></i> Data Pengguna
+                </a>
+                <a href="diagnoses.html" class="menu-item">
+                    <i class="fas fa-file-medical"></i> Data Diagnosa
+                </a>
+                <a href="diseases.html" class="menu-item">
+                    <i class="fas fa-user-md"></i> Gejala Pengguna
+                </a>
+                <a href="gejala.html" class="menu-item">
+                    <i class="fas fa-clipboard-list"></i> Data Gejala
+                </a>
+                <a href="recommendations.html" class="menu-item active">
+                    <i class="fas fa-lightbulb"></i> Rekomendasi
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Topbar -->
+            <div class="topbar">
+                <h1>Data Rekomendasi</h1>
+                <div class="user-info">
+                    <div id="userAvatar">A</div>
+                    <span id="userName">Administrator</span>
+                </div>
+                <button class="btn btn-primary btn-logout">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+
+            <!-- Content -->
+            <div class="content">
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card" style="border-left-color: var(--primary);">
+                        <div class="stat-icon" style="background: #e3f2fd; color: var(--primary);">
+                            <i class="fas fa-lightbulb"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="totalRecommendations">-</h3>
+                            <p>Total Rekomendasi</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card" style="border-left-color: var(--success);">
+                        <div class="stat-icon" style="background: #e8f5e9; color: var(--success);">
+                            <i class="fas fa-utensils"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="totalPolaMakan">-</h3>
+                            <p>Pola Makan</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card" style="border-left-color: var(--warning);">
+                        <div class="stat-icon" style="background: #fff3e0; color: var(--warning);">
+                            <i class="fas fa-running"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="totalAktivitas">-</h3>
+                            <p>Aktivitas Fisik</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card" style="border-left-color: #7b1fa2;">
+                        <div class="stat-icon" style="background: #f3e5f5; color: #7b1fa2;">
+                            <i class="fas fa-stethoscope"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="totalPemeriksaan">-</h3>
+                            <p>Pemeriksaan Medis</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Table Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Daftar Rekomendasi</h3>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <div class="view-toggle">
+                                <button class="view-btn active" onclick="toggleView('table')">
+                                    <i class="fas fa-table"></i> Tabel
+                                </button>
+                                <button class="view-btn" onclick="toggleView('grid')">
+                                    <i class="fas fa-th-large"></i> Grid
+                                </button>
+                            </div>
+                            <button onclick="showAddModal()" class="btn btn-success">
+                                <i class="fas fa-plus"></i>
+                                Tambah Rekomendasi
+                            </button>
+                            <button onclick="loadRecommendationsData()" class="btn btn-primary">
+                                <i class="fas fa-sync-alt"></i>
+                                Refresh
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <!-- Filters -->
+                        <div class="filters-container">
+                            <div class="search-box">
+                                <i class="fas fa-search"></i>
+                                <input type="text" id="searchInput" placeholder="Cari rekomendasi...">
+                            </div>
+                            <div class="filter-group">
+                                <select id="categoryFilter">
+                                    <option value="">Semua Kategori</option>
+                                    <option value="Pola Makan">Pola Makan</option>
+                                    <option value="Aktivitas Fisik">Aktivitas Fisik</option>
+                                    <option value="Pemeriksaan Medis">Pemeriksaan Medis</option>
+                                    <option value="Pemantauan">Pemantauan</option>
+                                </select>
+                                <select id="riskFilter">
+                                    <option value="">Semua Tingkat Risiko</option>
+                                    <option value="Rendah">Rendah</option>
+                                    <option value="Sedang">Sedang</option>
+                                    <option value="Tinggi">Tinggi</option>
+                                </select>
+                                <button onclick="applyFilters()" class="btn btn-primary">
+                                    <i class="fas fa-filter"></i>
+                                    Filter
+                                </button>
+                                <button onclick="resetFilters()" class="btn">
+                                    <i class="fas fa-redo"></i>
+                                    Reset
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Table View -->
+                        <div id="tableView">
+                            <div class="table-container">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Kategori</th>
+                                            <th>Judul</th>
+                                            <th>Deskripsi</th>
+                                            <th>Untuk Tingkat Risiko</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="recommendationsTableBody">
+                                        <!-- Data akan diisi oleh JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Loading State -->
+                            <div id="loadingState" class="loading-state">
+                                <div class="spinner"></div>
+                                <p>Memuat data rekomendasi...</p>
+                            </div>
+                            
+                            <!-- Empty State -->
+                            <div id="emptyState" class="empty-state hidden">
+                                <i class="fas fa-lightbulb"></i>
+                                <h3>Tidak ada data rekomendasi</h3>
+                                <p>Belum ada rekomendasi yang tersedia di sistem.</p>
+                            </div>
+                            
+                            <!-- Error State -->
+                            <div id="errorState" class="error-state hidden">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <h3>Gagal memuat data</h3>
+                                <p id="errorMessage">Terjadi kesalahan saat mengambil data rekomendasi.</p>
+                                <button onclick="loadRecommendationsData()" class="btn btn-primary" style="margin-top: 15px;">
+                                    <i class="fas fa-redo-alt"></i>
+                                    Coba Lagi
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Grid View -->
+                        <div id="gridView" class="hidden">
+                            <div class="recommendation-grid" id="recommendationsGrid">
+                                <!-- Data grid akan diisi oleh JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal untuk Tambah/Edit Rekomendasi -->
+    <div id="recommendationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Tambah Rekomendasi Baru</h3>
+                <button class="modal-close" onclick="hideModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="recommendationForm">
+                    <input type="hidden" id="recommendationId" name="id">
+                    
+                    <div class="form-group">
+                        <label for="kategori">Kategori *</label>
+                        <select id="kategori" name="kategori" required>
+                            <option value="">Pilih Kategori</option>
+                            <option value="Pola Makan">Pola Makan</option>
+                            <option value="Aktivitas Fisik">Aktivitas Fisik</option>
+                            <option value="Pemeriksaan Medis">Pemeriksaan Medis</option>
+                            <option value="Pemantauan">Pemantauan</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="judul">Judul *</label>
+                        <input type="text" id="judul" name="judul" required 
+                               placeholder="Masukkan judul rekomendasi">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="deskripsi">Deskripsi *</label>
+                        <textarea id="deskripsi" name="deskripsi" required 
+                                  placeholder="Masukkan deskripsi rekomendasi"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="untuk_tingkat_risiko">Untuk Tingkat Risiko *</label>
+                        <select id="untuk_tingkat_risiko" name="untuk_tingkat_risiko" required>
+                            <option value="">Pilih Tingkat Risiko</option>
+                            <option value="Rendah">Rendah</option>
+                            <option value="Sedang">Sedang</option>
+                            <option value="Tinggi">Tinggi</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn" onclick="hideModal()">Batal</button>
+                        <button type="submit" class="btn btn-primary" id="submitButton">
+                            <i class="fas fa-save"></i>
+                            Simpan
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // =============================
+        // ✅ Konfigurasi API - DIPERBAIKI
+        // =============================
+        const API_BASE_URL = "http://localhost:8000";
+
+        // =============================
+        // 🔹 Service untuk mengelola rekomendasi
+        // =============================
+        class RecommendationService {
+            static async getAll() {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/recommendations`);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return await response.json();
+                } catch (error) {
+                    console.error('Error fetching recommendations:', error);
+                    throw error;
+                }
+            }
+
+            static async getById(id) {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/recommendations/${id}`);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return await response.json();
+                } catch (error) {
+                    console.error('Error fetching recommendation:', error);
+                    throw error;
+                }
+            }
+
+            static async create(recommendationData) {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/recommendations`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(recommendationData)
+                    });
+                    if (!response.ok) {
+                        const errorData = await response.json().catch(() => ({}));
+                        throw new Error(errorData.message || errorData.error || `HTTP error! status: ${response.status}`);
+                    }
+                    return await response.json();
+                } catch (error) {
+                    console.error('Error creating recommendation:', error);
+                    throw error;
+                }
+            }
+
+            static async update(id, recommendationData) {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/recommendations/${id}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(recommendationData)
+                    });
+                    if (!response.ok) {
+                        const errorData = await response.json().catch(() => ({}));
+                        throw new Error(errorData.message || errorData.error || `HTTP error! status: ${response.status}`);
+                    }
+                    return await response.json();
+                } catch (error) {
+                    console.error('Error updating recommendation:', error);
+                    throw error;
+                }
+            }
+
+            static async delete(id) {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/recommendations/${id}`, {
+                        method: 'DELETE'
+                    });
+                    if (!response.ok) {
+                        const errorData = await response.json().catch(() => ({}));
+                        throw new Error(errorData.message || errorData.error || `HTTP error! status: ${response.status}`);
+                    }
+                    return await response.json();
+                } catch (error) {
+                    console.error('Error deleting recommendation:', error);
+                    throw error;
+                }
+            }
+        }
+
+        // =============================
+        // 🔹 Toast Notification System
+        // =============================
+        class Toast {
+            static show(message, type = 'success') {
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                toast.textContent = message;
+                
+                document.body.appendChild(toast);
+                
+                setTimeout(() => toast.classList.add('show'), 100);
+                
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    setTimeout(() => {
+                        if (toast.parentNode) {
+                            toast.parentNode.removeChild(toast);
+                        }
+                    }, 300);
+                }, 3000);
+            }
+        }
+
+        // =============================
+        // 🔹 Session Management
+        // =============================
+        function checkSession() {
+            const isLoggedIn = sessionStorage.getItem('isLoggedIn');
+            const adminName = sessionStorage.getItem('adminName');
+            
+            if (!isLoggedIn || !adminName) {
+                console.log('❌ No valid session, redirecting to login');
+                window.location.href = 'login.html';
+                return false;
+            }
+            
+            return true;
+        }
+
+        function initializeDashboard() {
+            console.log('🎯 Initializing dashboard...');
+            
+            // Cek session terlebih dahulu
+            if (!checkSession()) {
+                return;
+            }
+            
+            try {
+                // Update user info
+                const adminName = sessionStorage.getItem('adminName') || 'Administrator';
+                console.log('👤 Admin name:', adminName);
+                
+                // Update username display
+                document.getElementById('userName').textContent = adminName;
+                
+                // Update avatar with initial
+                const initial = adminName.charAt(0).toUpperCase();
+                document.getElementById('userAvatar').textContent = initial;
+                
+                // Setup logout button
+                const logoutButton = document.querySelector('.btn-logout');
+                if (logoutButton) {
+                    logoutButton.addEventListener('click', function() {
+                        if (confirm('Apakah Anda yakin ingin logout?')) {
+                            console.log('🚪 Logging out...');
+                            sessionStorage.clear();
+                            localStorage.clear();
+                            window.location.href = 'login.html';
+                        }
+                    });
+                }
+                
+                console.log('🎉 Dashboard fully initialized');
+                
+            } catch (error) {
+                console.error('❌ Error initializing dashboard:', error);
+                Toast.show('Terjadi kesalahan saat memuat dashboard', 'error');
+            }
+        }
+
+        // =============================
+        // 🔹 State Management
+        // =============================
+        let recommendationsData = [];
+        let filteredRecommendations = [];
+        let currentView = 'table';
+
+        // =============================
+        // 🔹 Modal Functions
+        // =============================
+        function showModal() {
+            document.getElementById('recommendationModal').classList.add('show');
+        }
+
+        function hideModal() {
+            document.getElementById('recommendationModal').classList.remove('show');
+            document.getElementById('recommendationForm').reset();
+            document.getElementById('recommendationId').value = '';
+        }
+
+        function showAddModal() {
+            document.getElementById('modalTitle').textContent = 'Tambah Rekomendasi Baru';
+            document.getElementById('submitButton').innerHTML = '<i class="fas fa-save"></i> Simpan';
+            showModal();
+        }
+
+        async function showEditModal(id) {
+            try {
+                const recommendation = await RecommendationService.getById(id);
+                
+                document.getElementById('modalTitle').textContent = 'Edit Rekomendasi';
+                document.getElementById('submitButton').innerHTML = '<i class="fas fa-save"></i> Update';
+                
+                // Isi form dengan data yang ada
+                document.getElementById('recommendationId').value = recommendation.id;
+                document.getElementById('kategori').value = recommendation.kategori || '';
+                document.getElementById('judul').value = recommendation.judul || '';
+                document.getElementById('deskripsi').value = recommendation.deskripsi || '';
+                document.getElementById('untuk_tingkat_risiko').value = recommendation.untuk_tingkat_risiko || '';
+                
+                showModal();
+            } catch (error) {
+                console.error('Error loading recommendation for edit:', error);
+                Toast.show('Gagal memuat data rekomendasi untuk diedit', 'error');
+            }
+        }
+
+        // =============================
+        // 🔹 Form Validation
+        // =============================
+        function validateRecommendationForm(formData) {
+            const errors = [];
+            
+            // Validasi kategori - SESUAI DATABASE
+            const kategori = formData.get('kategori');
+            if (!['Pola Makan', 'Aktivitas Fisik', 'Pemeriksaan Medis', 'Pemantauan'].includes(kategori)) {
+                errors.push('Kategori harus dipilih sesuai pilihan');
+            }
+            
+            // Validasi judul
+            const judul = formData.get('judul');
+            if (!judul || judul.trim().length < 3) {
+                errors.push('Judul minimal 3 karakter');
+            }
+            
+            // Validasi deskripsi
+            const deskripsi = formData.get('deskripsi');
+            if (!deskripsi || deskripsi.trim().length < 10) {
+                errors.push('Deskripsi minimal 10 karakter');
+            }
+            
+            // Validasi tingkat risiko
+            const untukTingkatRisiko = formData.get('untuk_tingkat_risiko');
+            if (!['Rendah', 'Sedang', 'Tinggi'].includes(untukTingkatRisiko)) {
+                errors.push('Tingkat risiko harus dipilih');
+            }
+            
+            return errors;
+        }
+
+        // =============================
+        // 🔹 Form Handler
+        // =============================
+        document.getElementById('recommendationForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            
+            // Validasi form
+            const errors = validateRecommendationForm(formData);
+            if (errors.length > 0) {
+                Toast.show(errors[0], 'error');
+                return;
+            }
+            
+            const recommendationData = {
+                kategori: formData.get('kategori'),
+                judul: formData.get('judul'),
+                deskripsi: formData.get('deskripsi'),
+                untuk_tingkat_risiko: formData.get('untuk_tingkat_risiko')
+            };
+
+            const recommendationId = formData.get('id');
+            const submitButton = document.getElementById('submitButton');
+            const originalText = submitButton.innerHTML;
+            
+            try {
+                submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
+                submitButton.disabled = true;
+                
+                if (recommendationId) {
+                    await RecommendationService.update(recommendationId, recommendationData);
+                    Toast.show('Rekomendasi berhasil diperbarui!', 'success');
+                } else {
+                    await RecommendationService.create(recommendationData);
+                    Toast.show('Rekomendasi berhasil dibuat!', 'success');
+                }
+                
+                hideModal();
+                loadRecommendationsData();
+            } catch (error) {
+                console.error('Error saving recommendation:', error);
+                Toast.show(`Error: ${error.message}`, 'error');
+            } finally {
+                submitButton.innerHTML = originalText;
+                submitButton.disabled = false;
+            }
+        });
+
+        // =============================
+        // 🔹 Delete Function
+        // =============================
+        async function deleteRecommendation(id) {
+            if (!confirm('Apakah Anda yakin ingin menghapus rekomendasi ini?')) {
+                return;
+            }
+            
+            try {
+                await RecommendationService.delete(id);
+                Toast.show('Rekomendasi berhasil dihapus!', 'success');
+                loadRecommendationsData();
+            } catch (error) {
+                console.error('Error deleting recommendation:', error);
+                Toast.show(`Error: ${error.message}`, 'error');
+            }
+        }
+
+        // =============================
+        // 🔹 Ambil daftar rekomendasi dari API
+        // =============================
+        async function loadRecommendationsData() {
+            // Cek session sebelum memuat data
+            if (!checkSession()) {
+                return;
+            }
+            
+            // Tampilkan loading state
+            document.getElementById('loadingState').classList.remove('hidden');
+            document.getElementById('emptyState').classList.add('hidden');
+            document.getElementById('errorState').classList.add('hidden');
+            document.getElementById('recommendationsTableBody').innerHTML = '';
+            document.getElementById('recommendationsGrid').innerHTML = '';
+            
+            try {
+                const data = await RecommendationService.getAll();
+
+                // Sembunyikan loading state
+                document.getElementById('loadingState').classList.add('hidden');
+                
+                if (!data.length) {
+                    // Tampilkan empty state
+                    document.getElementById('emptyState').classList.remove('hidden');
+                    updateStatistics();
+                    return;
+                }
+
+                recommendationsData = data;
+                filteredRecommendations = [...recommendationsData];
+                
+                // Update statistics
+                updateStatistics();
+                
+                // Render data
+                renderRecommendations();
+                
+            } catch (err) {
+                console.error('Error loading recommendations:', err);
+                // Tampilkan error state
+                document.getElementById('loadingState').classList.add('hidden');
+                document.getElementById('errorState').classList.remove('hidden');
+                document.getElementById('errorMessage').textContent = err.message || 'Terjadi kesalahan saat mengambil data rekomendasi.';
+            }
+        }
+
+        // =============================
+        // 🔹 Update statistics cards
+        // =============================
+        function updateStatistics() {
+            const totalRecommendations = recommendationsData.length;
+            const totalPolaMakan = recommendationsData.filter(rec => rec.kategori === 'Pola Makan').length;
+            const totalAktivitas = recommendationsData.filter(rec => rec.kategori === 'Aktivitas Fisik').length;
+            const totalPemeriksaan = recommendationsData.filter(rec => rec.kategori === 'Pemeriksaan Medis').length;
+            const totalPemantauan = recommendationsData.filter(rec => rec.kategori === 'Pemantauan').length;
+
+            document.getElementById('totalRecommendations').textContent = totalRecommendations;
+            document.getElementById('totalPolaMakan').textContent = totalPolaMakan;
+            document.getElementById('totalAktivitas').textContent = totalAktivitas;
+            document.getElementById('totalPemeriksaan').textContent = totalPemeriksaan + totalPemantauan;
+        }
+
+        // =============================
+        // 🔹 Render data (table dan grid)
+        // =============================
+        function renderRecommendations() {
+            if (currentView === 'table') {
+                renderTableView();
+            } else {
+                renderGridView();
+            }
+        }
+
+        // =============================
+        // 🔹 Render table view
+        // =============================
+        function renderTableView() {
+            const tableBody = document.getElementById('recommendationsTableBody');
+            
+            if (filteredRecommendations.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="text-center" style="padding: 40px; color: var(--gray-dark);">
+                            <i class="fas fa-search" style="font-size: 2rem; margin-bottom: 10px; display: block;"></i>
+                            Tidak ada rekomendasi yang sesuai dengan filter
+                        </td>
+                    </tr>
+                `;
+            } else {
+                tableBody.innerHTML = filteredRecommendations
+                    .map(recommendation => `
+                        <tr>
+                            <td>
+                                <div style="font-weight: 500; color: #1e88e5;">${recommendation.id}</div>
+                            </td>
+                            <td>
+                                <span class="badge ${getCategoryBadgeClass(recommendation.kategori)}">
+                                    ${recommendation.kategori}
+                                </span>
+                            </td>
+                            <td>
+                                <div style="font-weight: 500;">${recommendation.judul}</div>
+                            </td>
+                            <td>
+                                <div style="color: #9e9e9e; max-width: 300px; line-height: 1.4;">
+                                    ${recommendation.deskripsi}
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge ${getRiskBadgeClass(recommendation.untuk_tingkat_risiko)}">
+                                    ${recommendation.untuk_tingkat_risiko}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="btn-group">
+                                    <button onclick="showEditModal(${recommendation.id})" class="btn btn-warning btn-sm">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button onclick="deleteRecommendation(${recommendation.id})" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `).join('');
+            }
+        }
+
+        // =============================
+        // 🔹 Render grid view
+        // =============================
+        function renderGridView() {
+            const gridContainer = document.getElementById('recommendationsGrid');
+            
+            if (filteredRecommendations.length === 0) {
+                gridContainer.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #9e9e9e;">
+                        <i class="fas fa-search" style="font-size: 3rem; margin-bottom: 15px; display: block; opacity: 0.5;"></i>
+                        <h3>Tidak ada rekomendasi yang sesuai dengan filter</h3>
+                    </div>
+                `;
+            } else {
+                gridContainer.innerHTML = filteredRecommendations
+                    .map(recommendation => `
+                        <div class="recommendation-card" style="border-left-color: ${getCategoryColor(recommendation.kategori)};">
+                            <div class="recommendation-header">
+                                <div class="recommendation-icon" style="background: ${getCategoryBackground(recommendation.kategori)}; color: ${getCategoryColor(recommendation.kategori)};">
+                                    <i class="${getCategoryIcon(recommendation.kategori)}"></i>
+                                </div>
+                                <div class="recommendation-title">
+                                    <h4>${recommendation.judul}</h4>
+                                    <div class="recommendation-category">${recommendation.kategori}</div>
+                                </div>
+                            </div>
+                            <div class="recommendation-description">
+                                ${recommendation.deskripsi}
+                            </div>
+                            <div class="recommendation-footer">
+                                <span class="badge ${getRiskBadgeClass(recommendation.untuk_tingkat_risiko)}">
+                                    ${recommendation.untuk_tingkat_risiko}
+                                </span>
+                                <div class="btn-group">
+                                    <button onclick="showEditModal(${recommendation.id})" class="btn btn-warning btn-sm">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button onclick="deleteRecommendation(${recommendation.id})" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+            }
+        }
+
+        // =============================
+        // 🔹 Helper functions untuk styling
+        // =============================
+        function getCategoryBadgeClass(category) {
+            switch(category) {
+                case 'Pola Makan': return 'badge-success';
+                case 'Aktivitas Fisik': return 'badge-warning';
+                case 'Pemeriksaan Medis': return 'badge-danger';
+                case 'Pemantauan': return 'badge-info';
+                default: return 'badge-info';
+            }
+        }
+
+        function getRiskBadgeClass(riskLevel) {
+            switch(riskLevel) {
+                case 'Rendah': return 'badge-success';
+                case 'Sedang': return 'badge-warning';
+                case 'Tinggi': return 'badge-danger';
+                default: return 'badge-info';
+            }
+        }
+
+        function getCategoryColor(category) {
+            switch(category) {
+                case 'Pola Makan': return '#4caf50';
+                case 'Aktivitas Fisik': return '#ff9800';
+                case 'Pemeriksaan Medis': return '#f44336';
+                case 'Pemantauan': return '#1e88e5';
+                default: return '#1e88e5';
+            }
+        }
+
+        function getCategoryBackground(category) {
+            switch(category) {
+                case 'Pola Makan': return '#e8f5e9';
+                case 'Aktivitas Fisik': return '#fff3e0';
+                case 'Pemeriksaan Medis': return '#ffebee';
+                case 'Pemantauan': return '#e3f2fd';
+                default: return '#e3f2fd';
+            }
+        }
+
+        function getCategoryIcon(category) {
+            switch(category) {
+                case 'Pola Makan': return 'fas fa-utensils';
+                case 'Aktivitas Fisik': return 'fas fa-running';
+                case 'Pemeriksaan Medis': return 'fas fa-stethoscope';
+                case 'Pemantauan': return 'fas fa-clipboard-check';
+                default: return 'fas fa-lightbulb';
+            }
+        }
+
+        // =============================
+        // 🔹 Filter data rekomendasi
+        // =============================
+        function applyFilters() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const categoryValue = document.getElementById('categoryFilter').value;
+            const riskValue = document.getElementById('riskFilter').value;
+            
+            filteredRecommendations = recommendationsData.filter(recommendation => {
+                const title = (recommendation.judul || '').toLowerCase();
+                const description = (recommendation.deskripsi || '').toLowerCase();
+                const category = recommendation.kategori;
+                const riskLevel = recommendation.untuk_tingkat_risiko;
+                
+                const matchesSearch = title.includes(searchTerm) || description.includes(searchTerm);
+                const matchesCategory = !categoryValue || category === categoryValue;
+                const matchesRisk = !riskValue || riskLevel === riskValue;
+                
+                return matchesSearch && matchesCategory && matchesRisk;
+            });
+            
+            renderRecommendations();
+        }
+
+        // =============================
+        // 🔹 Reset filter
+        // =============================
+        function resetFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('categoryFilter').value = '';
+            document.getElementById('riskFilter').value = '';
+            filteredRecommendations = [...recommendationsData];
+            renderRecommendations();
+        }
+
+        // =============================
+        // 🔹 Toggle view mode
+        // =============================
+        function toggleView(view) {
+            currentView = view;
+            
+            // Update active button
+            document.querySelectorAll('.view-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Show/hide views
+            document.getElementById('tableView').classList.toggle('hidden', view !== 'table');
+            document.getElementById('gridView').classList.toggle('hidden', view !== 'grid');
+            
+            renderRecommendations();
+        }
+
+        // =============================
+        // 🚀 Jalankan saat halaman dimuat
+        // =============================
+        document.addEventListener("DOMContentLoaded", function() {
+            // Inisialisasi dashboard dan session
+            initializeDashboard();
+            
+            // Muat data rekomendasi
+            loadRecommendationsData();
+            
+            // Event listener untuk search input
+            document.getElementById('searchInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    applyFilters();
+                }
+            });
+
+            // Close modal ketika klik di luar modal
+            document.getElementById('recommendationModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    hideModal();
+                }
+            });
+            
+            // Close modal dengan ESC key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    hideModal();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

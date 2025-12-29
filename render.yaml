@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: sistem-diagnosa
+    env: node
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: 18.17.0
+      - key: PORT
+        value: 3000
+      - key: DATABASE_URL
+        sync: false
+    healthCheckPath: /
+    autoDeploy: true
