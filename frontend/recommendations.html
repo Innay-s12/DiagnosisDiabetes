@@ -124,23 +124,10 @@
             color: var(--primary);
         }
 
-        .user-info {
+        .topbar-user-info {
             display: flex;
             align-items: center;
-        }
-
-        .user-info div:first-child {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            margin-right: 10px;
-            background-color: var(--primary-light);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 16px;
+            gap: 15px;
         }
 
         .content {
@@ -345,110 +332,6 @@
             min-width: 150px;
         }
 
-        /* ===== MODAL STYLES ===== */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal.show {
-            display: flex;
-        }
-
-        .modal-content {
-            background-color: var(--white);
-            border-radius: 8px;
-            box-shadow: var(--shadow);
-            width: 90%;
-            max-width: 800px;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .modal-header {
-            padding: 20px;
-            background-color: var(--primary);
-            color: var(--white);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-radius: 8px 8px 0 0;
-        }
-
-        .modal-header h3 {
-            margin: 0;
-            font-size: 1.3rem;
-        }
-
-        .modal-close {
-            background: none;
-            border: none;
-            color: var(--white);
-            font-size: 1.5rem;
-            cursor: pointer;
-            padding: 0;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-body {
-            padding: 20px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 500;
-            color: var(--dark);
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid var(--gray);
-            border-radius: 4px;
-            font-size: 1rem;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 2px rgba(30, 136, 229, 0.2);
-        }
-
-        .form-group textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
-
-        .form-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid var(--gray);
-        }
-
         /* ===== LOADING & STATES ===== */
         .loading-state {
             display: flex;
@@ -491,59 +374,191 @@
 
         /* ===== BADGES ===== */
         .badge {
-            padding: 4px 8px;
-            border-radius: 4px;
+            padding: 6px 12px;
+            border-radius: 20px;
             font-size: 0.8rem;
             font-weight: 500;
-            color: white !important;
         }
 
         .badge-success {
-            background-color: var(--success);
+            background-color: #e8f5e9;
+            color: var(--success);
+            border: 1px solid var(--success);
         }
 
         .badge-warning {
-            background-color: var(--warning);
+            background-color: #fff3e0;
+            color: var(--warning);
+            border: 1px solid var(--warning);
         }
 
         .badge-danger {
-            background-color: var(--danger);
+            background-color: #ffebee;
+            color: var(--danger);
+            border: 1px solid var(--danger);
         }
 
         .badge-info {
-            background-color: var(--primary);
+            background-color: #e3f2fd;
+            color: var(--primary);
+            border: 1px solid var(--primary);
         }
 
-        /* ===== TOAST NOTIFICATION ===== */
-        .toast {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 20px;
-            border-radius: 8px;
-            color: white;
+        .badge-purple {
+            background-color: #f3e5f5;
+            color: #7b1fa2;
+            border: 1px solid #7b1fa2;
+        }
+
+        /* ===== PAGINATION ===== */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+            padding: 15px;
+        }
+
+        .pagination-info {
+            margin: 0 15px;
+            color: var(--gray-dark);
+        }
+
+        /* ===== MESSAGES ===== */
+        .message-area {
+            margin-bottom: 20px;
+        }
+
+        .success-message {
+            background-color: #e8f5e9;
+            color: var(--success);
+            padding: 15px;
+            border-radius: 4px;
+            border-left: 4px solid var(--success);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .error-message {
+            background-color: #ffebee;
+            color: var(--danger);
+            padding: 15px;
+            border-radius: 4px;
+            border-left: 4px solid var(--danger);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-message {
+            background-color: #e3f2fd;
+            color: var(--primary);
+            padding: 15px;
+            border-radius: 4px;
+            border-left: 4px solid var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* ===== FORM STYLES ===== */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
             font-weight: 500;
+            color: var(--dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid var(--gray);
+            border-radius: 4px;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(30, 136, 229, 0.2);
+        }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        /* ===== MODAL STYLES ===== */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
             z-index: 1000;
-            opacity: 0;
-            transform: translateX(100%);
-            transition: all 0.3s ease;
+            align-items: center;
+            justify-content: center;
         }
 
-        .toast.show {
-            opacity: 1;
-            transform: translateX(0);
+        .modal.show {
+            display: flex;
         }
 
-        .toast.success {
-            background-color: var(--success);
+        .modal-content {
+            background-color: var(--white);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            width: 90%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
-        .toast.error {
-            background-color: var(--danger);
+        .modal-header {
+            padding: 20px;
+            background-color: var(--primary);
+            color: var(--white);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 8px 8px 0 0;
         }
 
-        .toast.warning {
-            background-color: var(--warning);
+        .modal-header h3 {
+            margin: 0;
+            font-size: 1.3rem;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-body {
+            padding: 20px;
         }
 
         /* ===== RECOMMENDATION CARDS ===== */
@@ -641,6 +656,38 @@
             border-color: var(--primary);
         }
 
+        /* ===== TOAST STYLES ===== */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.3s ease;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .toast.success {
+            background-color: var(--success);
+        }
+
+        .toast.error {
+            background-color: var(--danger);
+        }
+
+        .toast.warning {
+            background-color: var(--warning);
+        }
+
         /* ===== RESPONSIVE ===== */
         @media (max-width: 992px) {
             .admin-container {
@@ -670,11 +717,10 @@
             .topbar {
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 10px;
             }
             
-            .user-info {
-                margin-top: 0;
+            .topbar-user-info {
+                margin-top: 10px;
             }
             
             .card-header {
@@ -699,6 +745,10 @@
             .view-toggle {
                 flex-direction: column;
             }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -720,11 +770,14 @@
                 <a href="diagnoses.html" class="menu-item">
                     <i class="fas fa-file-medical"></i> Data Diagnosa
                 </a>
-                <a href="diseases.html" class="menu-item">
+                <a href="user_symptoms.html" class="menu-item">
                     <i class="fas fa-user-md"></i> Gejala Pengguna
                 </a>
                 <a href="gejala.html" class="menu-item">
                     <i class="fas fa-clipboard-list"></i> Data Gejala
+                </a>
+                <a href="diseases.html" class="menu-item">
+                    <i class="fas fa-disease"></i> Data Penyakit
                 </a>
                 <a href="recommendations.html" class="menu-item active">
                     <i class="fas fa-lightbulb"></i> Rekomendasi
@@ -737,17 +790,26 @@
             <!-- Topbar -->
             <div class="topbar">
                 <h1>Data Rekomendasi</h1>
-                <div class="user-info">
-                    <div id="userAvatar">A</div>
-                    <span id="userName">Administrator</span>
+                <div class="topbar-user-info">
+                    <div class="user-info">
+                        <div id="userAvatar" style="width: 40px; height: 40px; border-radius: 50%; background: #e3f2fd; 
+                             display: flex; align-items: center; justify-content: center; 
+                             color: #1565c0; font-weight: bold; margin-right: 10px; font-size: 16px;">
+                            A
+                        </div>
+                        <span id="userName">Administrator</span>
+                    </div>
+                    <button class="btn btn-primary" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
                 </div>
-                <button class="btn btn-primary btn-logout">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </button>
             </div>
 
             <!-- Content -->
             <div class="content">
+                <!-- Messages Area -->
+                <div id="messageArea" class="message-area"></div>
+
                 <!-- Stats Cards -->
                 <div class="stats-grid">
                     <div class="stat-card" style="border-left-color: var(--primary);">
@@ -804,13 +866,13 @@
                                     <i class="fas fa-th-large"></i> Grid
                                 </button>
                             </div>
-                            <button onclick="showAddModal()" class="btn btn-success">
-                                <i class="fas fa-plus"></i>
-                                Tambah Rekomendasi
-                            </button>
                             <button onclick="loadRecommendationsData()" class="btn btn-primary">
                                 <i class="fas fa-sync-alt"></i>
                                 Refresh
+                            </button>
+                            <button onclick="showAddModal()" class="btn btn-success">
+                                <i class="fas fa-plus"></i>
+                                Tambah Rekomendasi
                             </button>
                         </div>
                     </div>
@@ -819,30 +881,22 @@
                         <div class="filters-container">
                             <div class="search-box">
                                 <i class="fas fa-search"></i>
-                                <input type="text" id="searchInput" placeholder="Cari rekomendasi...">
+                                <input type="text" id="searchInput" placeholder="Cari judul atau deskripsi..." oninput="applyFilters()">
                             </div>
                             <div class="filter-group">
-                                <select id="categoryFilter">
+                                <select id="categoryFilter" onchange="applyFilters()">
                                     <option value="">Semua Kategori</option>
                                     <option value="Pola Makan">Pola Makan</option>
                                     <option value="Aktivitas Fisik">Aktivitas Fisik</option>
                                     <option value="Pemeriksaan Medis">Pemeriksaan Medis</option>
                                     <option value="Pemantauan">Pemantauan</option>
                                 </select>
-                                <select id="riskFilter">
+                                <select id="riskFilter" onchange="applyFilters()">
                                     <option value="">Semua Tingkat Risiko</option>
                                     <option value="Rendah">Rendah</option>
                                     <option value="Sedang">Sedang</option>
                                     <option value="Tinggi">Tinggi</option>
                                 </select>
-                                <button onclick="applyFilters()" class="btn btn-primary">
-                                    <i class="fas fa-filter"></i>
-                                    Filter
-                                </button>
-                                <button onclick="resetFilters()" class="btn">
-                                    <i class="fas fa-redo"></i>
-                                    Reset
-                                </button>
                             </div>
                         </div>
 
@@ -865,30 +919,6 @@
                                     </tbody>
                                 </table>
                             </div>
-
-                            <!-- Loading State -->
-                            <div id="loadingState" class="loading-state">
-                                <div class="spinner"></div>
-                                <p>Memuat data rekomendasi...</p>
-                            </div>
-                            
-                            <!-- Empty State -->
-                            <div id="emptyState" class="empty-state hidden">
-                                <i class="fas fa-lightbulb"></i>
-                                <h3>Tidak ada data rekomendasi</h3>
-                                <p>Belum ada rekomendasi yang tersedia di sistem.</p>
-                            </div>
-                            
-                            <!-- Error State -->
-                            <div id="errorState" class="error-state hidden">
-                                <i class="fas fa-exclamation-triangle"></i>
-                                <h3>Gagal memuat data</h3>
-                                <p id="errorMessage">Terjadi kesalahan saat mengambil data rekomendasi.</p>
-                                <button onclick="loadRecommendationsData()" class="btn btn-primary" style="margin-top: 15px;">
-                                    <i class="fas fa-redo-alt"></i>
-                                    Coba Lagi
-                                </button>
-                            </div>
                         </div>
 
                         <!-- Grid View -->
@@ -897,26 +927,80 @@
                                 <!-- Data grid akan diisi oleh JavaScript -->
                             </div>
                         </div>
+
+                        <!-- Loading State -->
+                        <div id="loadingState" class="loading-state">
+                            <div class="spinner"></div>
+                            <p>Memuat data rekomendasi...</p>
+                        </div>
+                        
+                        <!-- Empty State -->
+                        <div id="emptyState" class="empty-state hidden">
+                            <i class="fas fa-lightbulb"></i>
+                            <h3>Tidak ada data rekomendasi</h3>
+                            <p>Belum ada rekomendasi yang terdaftar.</p>
+                        </div>
+                        
+                        <!-- Error State -->
+                        <div id="errorState" class="error-state hidden">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <h3>Gagal memuat data</h3>
+                            <p>Terjadi kesalahan saat mengambil data rekomendasi.</p>
+                            <button onclick="loadRecommendationsData()" class="btn btn-primary" style="margin-top: 15px;">
+                                <i class="fas fa-redo-alt"></i>
+                                Coba Lagi
+                            </button>
+                        </div>
+
+                        <!-- Pagination -->
+                        <div class="pagination">
+                            <button onclick="previousPage()" class="btn" id="prevBtn">
+                                <i class="fas fa-chevron-left"></i>
+                                Sebelumnya
+                            </button>
+                            <span class="pagination-info" id="pageInfo">Halaman 1 dari 1</span>
+                            <button onclick="nextPage()" class="btn" id="nextBtn">
+                                Selanjutnya
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- API Info Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Informasi API</h3>
+                    </div>
+                    <div class="card-body">
+                        <div style="display: flex; align-items: flex-start; gap: 15px;">
+                            <i class="fas fa-info-circle" style="color: var(--primary); font-size: 1.2rem; margin-top: 2px;"></i>
+                            <div>
+                                <p style="margin-bottom: 10px;">
+                                    Data rekomendasi diambil dari endpoint: 
+                                    <code style="background: #e3f2fd; padding: 2px 6px; border-radius: 3px; font-family: monospace;" id="apiEndpoint"></code>
+                                </p>
+                                <div id="apiStatus" style="margin-top: 10px;"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal untuk Tambah/Edit Rekomendasi -->
+    <!-- Modal untuk Add/Edit Recommendation -->
     <div id="recommendationModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 id="modalTitle">Tambah Rekomendasi Baru</h3>
-                <button class="modal-close" onclick="hideModal()">&times;</button>
+                <h3 id="recommendationModalTitle">Tambah Rekomendasi Baru</h3>
+                <button class="modal-close" onclick="closeRecommendationModal()">&times;</button>
             </div>
             <div class="modal-body">
-                <form id="recommendationForm">
-                    <input type="hidden" id="recommendationId" name="id">
-                    
+                <form id="recommendationForm" onsubmit="saveRecommendation(event)">
                     <div class="form-group">
-                        <label for="kategori">Kategori *</label>
-                        <select id="kategori" name="kategori" required>
+                        <label for="recommendationCategory" class="form-label">Kategori *</label>
+                        <select id="recommendationCategory" class="form-control" required>
                             <option value="">Pilih Kategori</option>
                             <option value="Pola Makan">Pola Makan</option>
                             <option value="Aktivitas Fisik">Aktivitas Fisik</option>
@@ -926,20 +1010,20 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="judul">Judul *</label>
-                        <input type="text" id="judul" name="judul" required 
+                        <label for="recommendationTitle" class="form-label">Judul *</label>
+                        <input type="text" id="recommendationTitle" class="form-control" required 
                                placeholder="Masukkan judul rekomendasi">
                     </div>
                     
                     <div class="form-group">
-                        <label for="deskripsi">Deskripsi *</label>
-                        <textarea id="deskripsi" name="deskripsi" required 
-                                  placeholder="Masukkan deskripsi rekomendasi"></textarea>
+                        <label for="recommendationDescription" class="form-label">Deskripsi *</label>
+                        <textarea id="recommendationDescription" class="form-control form-textarea" required 
+                                  placeholder="Masukkan deskripsi rekomendasi..."></textarea>
                     </div>
                     
                     <div class="form-group">
-                        <label for="untuk_tingkat_risiko">Untuk Tingkat Risiko *</label>
-                        <select id="untuk_tingkat_risiko" name="untuk_tingkat_risiko" required>
+                        <label for="recommendationRiskLevel" class="form-label">Untuk Tingkat Risiko *</label>
+                        <select id="recommendationRiskLevel" class="form-control" required>
                             <option value="">Pilih Tingkat Risiko</option>
                             <option value="Rendah">Rendah</option>
                             <option value="Sedang">Sedang</option>
@@ -947,10 +1031,17 @@
                         </select>
                     </div>
                     
-                    <div class="form-actions">
-                        <button type="button" class="btn" onclick="hideModal()">Batal</button>
-                        <button type="submit" class="btn btn-primary" id="submitButton">
-                            <i class="fas fa-save"></i>
+                    <div class="form-group">
+                        <label for="recommendationTips" class="form-label">Tips Tambahan</label>
+                        <textarea id="recommendationTips" class="form-control form-textarea" 
+                                  placeholder="Tips tambahan untuk rekomendasi ini..."></textarea>
+                    </div>
+                    
+                    <input type="hidden" id="recommendationId">
+                    
+                    <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+                        <button type="button" class="btn" onclick="closeRecommendationModal()">Batal</button>
+                        <button type="submit" class="btn btn-primary" id="submitBtn">
                             Simpan
                         </button>
                     </div>
@@ -959,78 +1050,173 @@
         </div>
     </div>
 
+    <!-- Modal untuk Detail Recommendation -->
+    <div id="detailModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="detailModalTitle">Detail Rekomendasi</h3>
+                <button class="modal-close" onclick="closeDetailModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="detailContent">
+                    <!-- Detail content akan diisi oleh JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal untuk Confirm Delete -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content" style="max-width: 400px;">
+            <div class="modal-header" style="background-color: var(--danger);">
+                <h3>Konfirmasi Hapus</h3>
+                <button class="modal-close" onclick="closeDeleteModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="deleteMessage">Apakah Anda yakin ingin menghapus rekomendasi ini?</p>
+                <p style="color: var(--danger); font-size: 0.9rem; margin-top: 10px;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Tindakan ini tidak dapat dibatalkan!
+                </p>
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+                    <button type="button" class="btn" onclick="closeDeleteModal()">Batal</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+                        <i class="fas fa-trash"></i>
+                        Ya, Hapus
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // =============================
-        // ✅ Konfigurasi API - DIPERBAIKI
+        // 🔐 SESSION MANAGEMENT
         // =============================
-        const API_BASE_URL = "http://localhost:8000";
+        
+        class SessionManager {
+            static checkSession() {
+                try {
+                    const isLoggedIn = sessionStorage.getItem('isLoggedIn');
+                    const adminName = sessionStorage.getItem('adminName');
+                    const loginTime = sessionStorage.getItem('loginTime');
+                    
+                    console.log('🔍 Session check:', { isLoggedIn, adminName, loginTime });
+                    
+                    // Check if session exists and is valid
+                    if (isLoggedIn === 'true' && adminName && loginTime) {
+                        const sessionAge = Date.now() - parseInt(loginTime);
+                        const sessionValid = sessionAge < (24 * 60 * 60 * 1000); // 24 hours
+                        
+                        if (sessionValid) {
+                            console.log('✅ Valid session found');
+                            return true;
+                        } else {
+                            console.log('❌ Session expired');
+                            this.clearSession();
+                        }
+                    }
+                    
+                    console.log('❌ No valid session found');
+                    return false;
+                } catch (error) {
+                    console.error('Error checking session:', error);
+                    return false;
+                }
+            }
+            
+            static clearSession() {
+                sessionStorage.clear();
+                localStorage.clear();
+            }
+            
+            static getAdminName() {
+                return sessionStorage.getItem('adminName') || 'Administrator';
+            }
+        }
+
+        // =============================
+        // ✅ Konfigurasi API - Menggunakan dari config.js
+        // =============================
+        const API_BASE_URL = window.API_BASE_URL || "http://localhost:8000";
 
         // =============================
         // 🔹 Service untuk mengelola rekomendasi
         // =============================
         class RecommendationService {
-            static async getAll() {
+            static async getRecommendations() {
                 try {
+                    console.log('📡 Fetching recommendations from:', `${API_BASE_URL}/recommendations`);
                     const response = await fetch(`${API_BASE_URL}/recommendations`);
+                    
                     if (!response.ok) {
                         throw new Error(`HTTP error! status: ${response.status}`);
                     }
-                    return await response.json();
+                    
+                    const data = await response.json();
+                    console.log('✅ Recommendations data received:', data);
+                    return data;
                 } catch (error) {
-                    console.error('Error fetching recommendations:', error);
+                    console.error('❌ Error fetching recommendations:', error);
                     throw error;
                 }
             }
 
-            static async getById(id) {
+            static async getRecommendationById(id) {
                 try {
                     const response = await fetch(`${API_BASE_URL}/recommendations/${id}`);
+                    
                     if (!response.ok) {
                         throw new Error(`HTTP error! status: ${response.status}`);
                     }
+                    
                     return await response.json();
                 } catch (error) {
-                    console.error('Error fetching recommendation:', error);
+                    console.error('❌ Error fetching recommendation:', error);
                     throw error;
                 }
             }
 
-            static async create(recommendationData) {
+            static async create(recommendation) {
                 try {
                     const response = await fetch(`${API_BASE_URL}/recommendations`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                         },
-                        body: JSON.stringify(recommendationData)
+                        body: JSON.stringify(recommendation)
                     });
+                    
                     if (!response.ok) {
-                        const errorData = await response.json().catch(() => ({}));
-                        throw new Error(errorData.message || errorData.error || `HTTP error! status: ${response.status}`);
+                        const errorData = await response.json();
+                        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
                     }
+                    
                     return await response.json();
                 } catch (error) {
-                    console.error('Error creating recommendation:', error);
+                    console.error('❌ Error creating recommendation:', error);
                     throw error;
                 }
             }
 
-            static async update(id, recommendationData) {
+            static async update(id, recommendation) {
                 try {
                     const response = await fetch(`${API_BASE_URL}/recommendations/${id}`, {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json',
                         },
-                        body: JSON.stringify(recommendationData)
+                        body: JSON.stringify(recommendation)
                     });
+                    
                     if (!response.ok) {
-                        const errorData = await response.json().catch(() => ({}));
-                        throw new Error(errorData.message || errorData.error || `HTTP error! status: ${response.status}`);
+                        const errorData = await response.json();
+                        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
                     }
+                    
                     return await response.json();
                 } catch (error) {
-                    console.error('Error updating recommendation:', error);
+                    console.error('❌ Error updating recommendation:', error);
                     throw error;
                 }
             }
@@ -1040,14 +1226,26 @@
                     const response = await fetch(`${API_BASE_URL}/recommendations/${id}`, {
                         method: 'DELETE'
                     });
+                    
                     if (!response.ok) {
-                        const errorData = await response.json().catch(() => ({}));
-                        throw new Error(errorData.message || errorData.error || `HTTP error! status: ${response.status}`);
+                        const errorData = await response.json();
+                        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
                     }
+                    
                     return await response.json();
                 } catch (error) {
-                    console.error('Error deleting recommendation:', error);
+                    console.error('❌ Error deleting recommendation:', error);
                     throw error;
+                }
+            }
+
+            static async getApiStatus() {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/test-db`);
+                    return response.ok;
+                } catch (error) {
+                    console.error('❌ Error checking API status:', error);
+                    return false;
                 }
             }
         }
@@ -1060,13 +1258,40 @@
                 const toast = document.createElement('div');
                 toast.className = `toast ${type}`;
                 toast.textContent = message;
+                toast.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    padding: 15px 20px;
+                    border-radius: 8px;
+                    color: white;
+                    font-weight: 500;
+                    z-index: 1000;
+                    transition: all 0.3s ease;
+                `;
+                
+                if (type === 'success') {
+                    toast.style.backgroundColor = 'var(--success)';
+                } else if (type === 'error') {
+                    toast.style.backgroundColor = 'var(--danger)';
+                } else if (type === 'warning') {
+                    toast.style.backgroundColor = 'var(--warning)';
+                } else {
+                    toast.style.backgroundColor = 'var(--primary)';
+                }
                 
                 document.body.appendChild(toast);
                 
-                setTimeout(() => toast.classList.add('show'), 100);
-                
+                // Show with animation
                 setTimeout(() => {
-                    toast.classList.remove('show');
+                    toast.style.opacity = '1';
+                    toast.style.transform = 'translateX(0)';
+                }, 10);
+                
+                // Auto hide after 3 seconds
+                setTimeout(() => {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateX(100%)';
                     setTimeout(() => {
                         if (toast.parentNode) {
                             toast.parentNode.removeChild(toast);
@@ -1077,253 +1302,181 @@
         }
 
         // =============================
-        // 🔹 Session Management
+        // 🔹 State Management
         // =============================
-        function checkSession() {
-            const isLoggedIn = sessionStorage.getItem('isLoggedIn');
-            const adminName = sessionStorage.getItem('adminName');
-            
-            if (!isLoggedIn || !adminName) {
-                console.log('❌ No valid session, redirecting to login');
-                window.location.href = 'login.html';
-                return false;
+        let recommendationsData = [];
+        let filteredRecommendations = [];
+        let currentPage = 1;
+        const recommendationsPerPage = 10;
+        let currentView = 'table';
+
+        // =============================
+        // 🔹 UI Controller
+        // =============================
+        class UIController {
+            static showLoading() {
+                document.getElementById('loadingState').classList.remove('hidden');
+                document.getElementById('emptyState').classList.add('hidden');
+                document.getElementById('errorState').classList.add('hidden');
+                document.getElementById('recommendationsTableBody').innerHTML = '';
+                document.getElementById('recommendationsGrid').innerHTML = '';
             }
             
-            return true;
+            static hideLoading() {
+                document.getElementById('loadingState').classList.add('hidden');
+            }
+            
+            static showEmptyState() {
+                document.getElementById('emptyState').classList.remove('hidden');
+            }
+            
+            static showErrorState() {
+                document.getElementById('errorState').classList.remove('hidden');
+            }
+            
+            static updateUserInfo() {
+                const adminName = SessionManager.getAdminName();
+                const initial = adminName.charAt(0).toUpperCase();
+                
+                document.getElementById('userName').textContent = adminName;
+                document.getElementById('userAvatar').textContent = initial;
+            }
+            
+            static showMessage(message, type = 'success') {
+                const messageArea = document.getElementById('messageArea');
+                const messageClass = type === 'success' ? 'success-message' : 
+                                   type === 'error' ? 'error-message' : 'info-message';
+                const messageIcon = type === 'success' ? 'fa-check-circle' : 
+                                  type === 'error' ? 'fa-exclamation-triangle' : 'fa-info-circle';
+                
+                messageArea.innerHTML = `
+                    <div class="${messageClass}">
+                        <i class="fas ${messageIcon}"></i>
+                        ${message}
+                    </div>
+                `;
+                
+                setTimeout(() => {
+                    messageArea.innerHTML = '';
+                }, 5000);
+            }
         }
 
+        // =============================
+        // 🔹 Initialize dashboard
+        // =============================
         function initializeDashboard() {
             console.log('🎯 Initializing dashboard...');
             
             // Cek session terlebih dahulu
-            if (!checkSession()) {
+            if (!SessionManager.checkSession()) {
+                window.location.href = 'login.html';
                 return;
             }
             
             try {
-                // Update user info
-                const adminName = sessionStorage.getItem('adminName') || 'Administrator';
-                console.log('👤 Admin name:', adminName);
+                // Setup UI
+                UIController.updateUserInfo();
                 
-                // Update username display
-                document.getElementById('userName').textContent = adminName;
+                // Setup event listeners
+                document.getElementById('logoutBtn').addEventListener('click', function() {
+                    if (confirm('Apakah Anda yakin ingin logout?')) {
+                        console.log('🚪 Logging out...');
+                        SessionManager.clearSession();
+                        window.location.href = 'login.html';
+                    }
+                });
                 
-                // Update avatar with initial
-                const initial = adminName.charAt(0).toUpperCase();
-                document.getElementById('userAvatar').textContent = initial;
+                // Close modal ketika klik di luar modal
+                document.getElementById('recommendationModal').addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        closeRecommendationModal();
+                    }
+                });
                 
-                // Setup logout button
-                const logoutButton = document.querySelector('.btn-logout');
-                if (logoutButton) {
-                    logoutButton.addEventListener('click', function() {
-                        if (confirm('Apakah Anda yakin ingin logout?')) {
-                            console.log('🚪 Logging out...');
-                            sessionStorage.clear();
-                            localStorage.clear();
-                            window.location.href = 'login.html';
-                        }
-                    });
-                }
+                document.getElementById('detailModal').addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        closeDetailModal();
+                    }
+                });
+                
+                document.getElementById('deleteModal').addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        closeDeleteModal();
+                    }
+                });
+                
+                // Update API endpoint info
+                document.getElementById('apiEndpoint').textContent = `${API_BASE_URL}/recommendations`;
                 
                 console.log('🎉 Dashboard fully initialized');
                 
             } catch (error) {
                 console.error('❌ Error initializing dashboard:', error);
-                Toast.show('Terjadi kesalahan saat memuat dashboard', 'error');
+                UIController.showMessage('Terjadi kesalahan saat memuat halaman', 'error');
             }
         }
 
         // =============================
-        // 🔹 State Management
+        // 🔹 Update API status display
         // =============================
-        let recommendationsData = [];
-        let filteredRecommendations = [];
-        let currentView = 'table';
-
-        // =============================
-        // 🔹 Modal Functions
-        // =============================
-        function showModal() {
-            document.getElementById('recommendationModal').classList.add('show');
-        }
-
-        function hideModal() {
-            document.getElementById('recommendationModal').classList.remove('show');
-            document.getElementById('recommendationForm').reset();
-            document.getElementById('recommendationId').value = '';
-        }
-
-        function showAddModal() {
-            document.getElementById('modalTitle').textContent = 'Tambah Rekomendasi Baru';
-            document.getElementById('submitButton').innerHTML = '<i class="fas fa-save"></i> Simpan';
-            showModal();
-        }
-
-        async function showEditModal(id) {
-            try {
-                const recommendation = await RecommendationService.getById(id);
-                
-                document.getElementById('modalTitle').textContent = 'Edit Rekomendasi';
-                document.getElementById('submitButton').innerHTML = '<i class="fas fa-save"></i> Update';
-                
-                // Isi form dengan data yang ada
-                document.getElementById('recommendationId').value = recommendation.id;
-                document.getElementById('kategori').value = recommendation.kategori || '';
-                document.getElementById('judul').value = recommendation.judul || '';
-                document.getElementById('deskripsi').value = recommendation.deskripsi || '';
-                document.getElementById('untuk_tingkat_risiko').value = recommendation.untuk_tingkat_risiko || '';
-                
-                showModal();
-            } catch (error) {
-                console.error('Error loading recommendation for edit:', error);
-                Toast.show('Gagal memuat data rekomendasi untuk diedit', 'error');
+        function updateApiStatus(status) {
+            const apiStatusElement = document.getElementById('apiStatus');
+            
+            if (status) {
+                apiStatusElement.innerHTML = `
+                    <span style="color: var(--success);">
+                        <i class="fas fa-check-circle"></i> API terhubung dengan baik
+                    </span>
+                `;
+            } else {
+                apiStatusElement.innerHTML = `
+                    <span style="color: var(--danger);">
+                        <i class="fas fa-times-circle"></i> API tidak terhubung
+                    </span>
+                    <p style="color: var(--gray-dark); font-size: 0.9rem; margin-top: 5px;">
+                        Pastikan server API berjalan di ${API_BASE_URL}
+                    </p>
+                `;
             }
         }
 
         // =============================
-        // 🔹 Form Validation
-        // =============================
-        function validateRecommendationForm(formData) {
-            const errors = [];
-            
-            // Validasi kategori - SESUAI DATABASE
-            const kategori = formData.get('kategori');
-            if (!['Pola Makan', 'Aktivitas Fisik', 'Pemeriksaan Medis', 'Pemantauan'].includes(kategori)) {
-                errors.push('Kategori harus dipilih sesuai pilihan');
-            }
-            
-            // Validasi judul
-            const judul = formData.get('judul');
-            if (!judul || judul.trim().length < 3) {
-                errors.push('Judul minimal 3 karakter');
-            }
-            
-            // Validasi deskripsi
-            const deskripsi = formData.get('deskripsi');
-            if (!deskripsi || deskripsi.trim().length < 10) {
-                errors.push('Deskripsi minimal 10 karakter');
-            }
-            
-            // Validasi tingkat risiko
-            const untukTingkatRisiko = formData.get('untuk_tingkat_risiko');
-            if (!['Rendah', 'Sedang', 'Tinggi'].includes(untukTingkatRisiko)) {
-                errors.push('Tingkat risiko harus dipilih');
-            }
-            
-            return errors;
-        }
-
-        // =============================
-        // 🔹 Form Handler
-        // =============================
-        document.getElementById('recommendationForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const formData = new FormData(this);
-            
-            // Validasi form
-            const errors = validateRecommendationForm(formData);
-            if (errors.length > 0) {
-                Toast.show(errors[0], 'error');
-                return;
-            }
-            
-            const recommendationData = {
-                kategori: formData.get('kategori'),
-                judul: formData.get('judul'),
-                deskripsi: formData.get('deskripsi'),
-                untuk_tingkat_risiko: formData.get('untuk_tingkat_risiko')
-            };
-
-            const recommendationId = formData.get('id');
-            const submitButton = document.getElementById('submitButton');
-            const originalText = submitButton.innerHTML;
-            
-            try {
-                submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
-                submitButton.disabled = true;
-                
-                if (recommendationId) {
-                    await RecommendationService.update(recommendationId, recommendationData);
-                    Toast.show('Rekomendasi berhasil diperbarui!', 'success');
-                } else {
-                    await RecommendationService.create(recommendationData);
-                    Toast.show('Rekomendasi berhasil dibuat!', 'success');
-                }
-                
-                hideModal();
-                loadRecommendationsData();
-            } catch (error) {
-                console.error('Error saving recommendation:', error);
-                Toast.show(`Error: ${error.message}`, 'error');
-            } finally {
-                submitButton.innerHTML = originalText;
-                submitButton.disabled = false;
-            }
-        });
-
-        // =============================
-        // 🔹 Delete Function
-        // =============================
-        async function deleteRecommendation(id) {
-            if (!confirm('Apakah Anda yakin ingin menghapus rekomendasi ini?')) {
-                return;
-            }
-            
-            try {
-                await RecommendationService.delete(id);
-                Toast.show('Rekomendasi berhasil dihapus!', 'success');
-                loadRecommendationsData();
-            } catch (error) {
-                console.error('Error deleting recommendation:', error);
-                Toast.show(`Error: ${error.message}`, 'error');
-            }
-        }
-
-        // =============================
-        // 🔹 Ambil daftar rekomendasi dari API
+        // 🔹 Ambil data rekomendasi dari API
         // =============================
         async function loadRecommendationsData() {
-            // Cek session sebelum memuat data
-            if (!checkSession()) {
-                return;
-            }
-            
-            // Tampilkan loading state
-            document.getElementById('loadingState').classList.remove('hidden');
-            document.getElementById('emptyState').classList.add('hidden');
-            document.getElementById('errorState').classList.add('hidden');
-            document.getElementById('recommendationsTableBody').innerHTML = '';
-            document.getElementById('recommendationsGrid').innerHTML = '';
+            UIController.showLoading();
             
             try {
-                const data = await RecommendationService.getAll();
-
-                // Sembunyikan loading state
-                document.getElementById('loadingState').classList.add('hidden');
+                // Test API connection first
+                const apiStatus = await RecommendationService.getApiStatus();
+                updateApiStatus(apiStatus);
                 
-                if (!data.length) {
-                    // Tampilkan empty state
-                    document.getElementById('emptyState').classList.remove('hidden');
+                if (!apiStatus) {
+                    throw new Error('Tidak dapat terhubung ke server API');
+                }
+                
+                // Load recommendations data
+                recommendationsData = await RecommendationService.getRecommendations();
+                filteredRecommendations = [...recommendationsData];
+                
+                UIController.hideLoading();
+                
+                if (!recommendationsData || recommendationsData.length === 0) {
+                    UIController.showEmptyState();
                     updateStatistics();
                     return;
                 }
 
-                recommendationsData = data;
-                filteredRecommendations = [...recommendationsData];
-                
-                // Update statistics
                 updateStatistics();
-                
-                // Render data
                 renderRecommendations();
+                UIController.showMessage(`Berhasil memuat ${recommendationsData.length} rekomendasi`, 'success');
                 
             } catch (err) {
-                console.error('Error loading recommendations:', err);
-                // Tampilkan error state
-                document.getElementById('loadingState').classList.add('hidden');
-                document.getElementById('errorState').classList.remove('hidden');
-                document.getElementById('errorMessage').textContent = err.message || 'Terjadi kesalahan saat mengambil data rekomendasi.';
+                console.error('❌ Error loading recommendations:', err);
+                UIController.hideLoading();
+                UIController.showErrorState();
+                UIController.showMessage(`Gagal memuat data: ${err.message}`, 'error');
             }
         }
 
@@ -1332,215 +1485,68 @@
         // =============================
         function updateStatistics() {
             const totalRecommendations = recommendationsData.length;
-            const totalPolaMakan = recommendationsData.filter(rec => rec.kategori === 'Pola Makan').length;
-            const totalAktivitas = recommendationsData.filter(rec => rec.kategori === 'Aktivitas Fisik').length;
-            const totalPemeriksaan = recommendationsData.filter(rec => rec.kategori === 'Pemeriksaan Medis').length;
-            const totalPemantauan = recommendationsData.filter(rec => rec.kategori === 'Pemantauan').length;
+            
+            // Hitung berdasarkan kategori
+            const totalPolaMakan = recommendationsData.filter(r => r.kategori === 'Pola Makan').length;
+            const totalAktivitas = recommendationsData.filter(r => r.kategori === 'Aktivitas Fisik').length;
+            const totalPemeriksaan = recommendationsData.filter(r => r.kategori === 'Pemeriksaan Medis' || r.kategori === 'Pemantauan').length;
 
             document.getElementById('totalRecommendations').textContent = totalRecommendations;
             document.getElementById('totalPolaMakan').textContent = totalPolaMakan;
             document.getElementById('totalAktivitas').textContent = totalAktivitas;
-            document.getElementById('totalPemeriksaan').textContent = totalPemeriksaan + totalPemantauan;
-        }
-
-        // =============================
-        // 🔹 Render data (table dan grid)
-        // =============================
-        function renderRecommendations() {
-            if (currentView === 'table') {
-                renderTableView();
-            } else {
-                renderGridView();
-            }
-        }
-
-        // =============================
-        // 🔹 Render table view
-        // =============================
-        function renderTableView() {
-            const tableBody = document.getElementById('recommendationsTableBody');
-            
-            if (filteredRecommendations.length === 0) {
-                tableBody.innerHTML = `
-                    <tr>
-                        <td colspan="6" class="text-center" style="padding: 40px; color: var(--gray-dark);">
-                            <i class="fas fa-search" style="font-size: 2rem; margin-bottom: 10px; display: block;"></i>
-                            Tidak ada rekomendasi yang sesuai dengan filter
-                        </td>
-                    </tr>
-                `;
-            } else {
-                tableBody.innerHTML = filteredRecommendations
-                    .map(recommendation => `
-                        <tr>
-                            <td>
-                                <div style="font-weight: 500; color: #1e88e5;">${recommendation.id}</div>
-                            </td>
-                            <td>
-                                <span class="badge ${getCategoryBadgeClass(recommendation.kategori)}">
-                                    ${recommendation.kategori}
-                                </span>
-                            </td>
-                            <td>
-                                <div style="font-weight: 500;">${recommendation.judul}</div>
-                            </td>
-                            <td>
-                                <div style="color: #9e9e9e; max-width: 300px; line-height: 1.4;">
-                                    ${recommendation.deskripsi}
-                                </div>
-                            </td>
-                            <td>
-                                <span class="badge ${getRiskBadgeClass(recommendation.untuk_tingkat_risiko)}">
-                                    ${recommendation.untuk_tingkat_risiko}
-                                </span>
-                            </td>
-                            <td>
-                                <div class="btn-group">
-                                    <button onclick="showEditModal(${recommendation.id})" class="btn btn-warning btn-sm">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button onclick="deleteRecommendation(${recommendation.id})" class="btn btn-danger btn-sm">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    `).join('');
-            }
-        }
-
-        // =============================
-        // 🔹 Render grid view
-        // =============================
-        function renderGridView() {
-            const gridContainer = document.getElementById('recommendationsGrid');
-            
-            if (filteredRecommendations.length === 0) {
-                gridContainer.innerHTML = `
-                    <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #9e9e9e;">
-                        <i class="fas fa-search" style="font-size: 3rem; margin-bottom: 15px; display: block; opacity: 0.5;"></i>
-                        <h3>Tidak ada rekomendasi yang sesuai dengan filter</h3>
-                    </div>
-                `;
-            } else {
-                gridContainer.innerHTML = filteredRecommendations
-                    .map(recommendation => `
-                        <div class="recommendation-card" style="border-left-color: ${getCategoryColor(recommendation.kategori)};">
-                            <div class="recommendation-header">
-                                <div class="recommendation-icon" style="background: ${getCategoryBackground(recommendation.kategori)}; color: ${getCategoryColor(recommendation.kategori)};">
-                                    <i class="${getCategoryIcon(recommendation.kategori)}"></i>
-                                </div>
-                                <div class="recommendation-title">
-                                    <h4>${recommendation.judul}</h4>
-                                    <div class="recommendation-category">${recommendation.kategori}</div>
-                                </div>
-                            </div>
-                            <div class="recommendation-description">
-                                ${recommendation.deskripsi}
-                            </div>
-                            <div class="recommendation-footer">
-                                <span class="badge ${getRiskBadgeClass(recommendation.untuk_tingkat_risiko)}">
-                                    ${recommendation.untuk_tingkat_risiko}
-                                </span>
-                                <div class="btn-group">
-                                    <button onclick="showEditModal(${recommendation.id})" class="btn btn-warning btn-sm">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button onclick="deleteRecommendation(${recommendation.id})" class="btn btn-danger btn-sm">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    `).join('');
-            }
+            document.getElementById('totalPemeriksaan').textContent = totalPemeriksaan;
         }
 
         // =============================
         // 🔹 Helper functions untuk styling
         // =============================
         function getCategoryBadgeClass(category) {
-            switch(category) {
-                case 'Pola Makan': return 'badge-success';
-                case 'Aktivitas Fisik': return 'badge-warning';
-                case 'Pemeriksaan Medis': return 'badge-danger';
-                case 'Pemantauan': return 'badge-info';
+            switch(category?.toLowerCase()) {
+                case 'pola makan': return 'badge-success';
+                case 'aktivitas fisik': return 'badge-warning';
+                case 'pemeriksaan medis': return 'badge-danger';
+                case 'pemantauan': return 'badge-purple';
                 default: return 'badge-info';
             }
         }
 
         function getRiskBadgeClass(riskLevel) {
-            switch(riskLevel) {
-                case 'Rendah': return 'badge-success';
-                case 'Sedang': return 'badge-warning';
-                case 'Tinggi': return 'badge-danger';
+            switch(riskLevel?.toLowerCase()) {
+                case 'rendah': return 'badge-success';
+                case 'sedang': return 'badge-warning';
+                case 'tinggi': return 'badge-danger';
                 default: return 'badge-info';
             }
         }
 
         function getCategoryColor(category) {
-            switch(category) {
-                case 'Pola Makan': return '#4caf50';
-                case 'Aktivitas Fisik': return '#ff9800';
-                case 'Pemeriksaan Medis': return '#f44336';
-                case 'Pemantauan': return '#1e88e5';
+            switch(category?.toLowerCase()) {
+                case 'pola makan': return '#4caf50';
+                case 'aktivitas fisik': return '#ff9800';
+                case 'pemeriksaan medis': return '#f44336';
+                case 'pemantauan': return '#7b1fa2';
                 default: return '#1e88e5';
             }
         }
 
         function getCategoryBackground(category) {
-            switch(category) {
-                case 'Pola Makan': return '#e8f5e9';
-                case 'Aktivitas Fisik': return '#fff3e0';
-                case 'Pemeriksaan Medis': return '#ffebee';
-                case 'Pemantauan': return '#e3f2fd';
+            switch(category?.toLowerCase()) {
+                case 'pola makan': return '#e8f5e9';
+                case 'aktivitas fisik': return '#fff3e0';
+                case 'pemeriksaan medis': return '#ffebee';
+                case 'pemantauan': return '#f3e5f5';
                 default: return '#e3f2fd';
             }
         }
 
         function getCategoryIcon(category) {
-            switch(category) {
-                case 'Pola Makan': return 'fas fa-utensils';
-                case 'Aktivitas Fisik': return 'fas fa-running';
-                case 'Pemeriksaan Medis': return 'fas fa-stethoscope';
-                case 'Pemantauan': return 'fas fa-clipboard-check';
+            switch(category?.toLowerCase()) {
+                case 'pola makan': return 'fas fa-utensils';
+                case 'aktivitas fisik': return 'fas fa-running';
+                case 'pemeriksaan medis': return 'fas fa-stethoscope';
+                case 'pemantauan': return 'fas fa-clipboard-check';
                 default: return 'fas fa-lightbulb';
             }
-        }
-
-        // =============================
-        // 🔹 Filter data rekomendasi
-        // =============================
-        function applyFilters() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const categoryValue = document.getElementById('categoryFilter').value;
-            const riskValue = document.getElementById('riskFilter').value;
-            
-            filteredRecommendations = recommendationsData.filter(recommendation => {
-                const title = (recommendation.judul || '').toLowerCase();
-                const description = (recommendation.deskripsi || '').toLowerCase();
-                const category = recommendation.kategori;
-                const riskLevel = recommendation.untuk_tingkat_risiko;
-                
-                const matchesSearch = title.includes(searchTerm) || description.includes(searchTerm);
-                const matchesCategory = !categoryValue || category === categoryValue;
-                const matchesRisk = !riskValue || riskLevel === riskValue;
-                
-                return matchesSearch && matchesCategory && matchesRisk;
-            });
-            
-            renderRecommendations();
-        }
-
-        // =============================
-        // 🔹 Reset filter
-        // =============================
-        function resetFilters() {
-            document.getElementById('searchInput').value = '';
-            document.getElementById('categoryFilter').value = '';
-            document.getElementById('riskFilter').value = '';
-            filteredRecommendations = [...recommendationsData];
-            renderRecommendations();
         }
 
         // =============================
@@ -1563,36 +1569,457 @@
         }
 
         // =============================
+        // 🔹 Render data berdasarkan view mode
+        // =============================
+        function renderRecommendations() {
+            if (currentView === 'table') {
+                renderTableView();
+            } else {
+                renderGridView();
+            }
+            updatePaginationInfo();
+        }
+
+        // =============================
+        // 🔹 Render table view
+        // =============================
+        function renderTableView() {
+            const tableBody = document.getElementById('recommendationsTableBody');
+            
+            // Calculate pagination
+            const startIndex = (currentPage - 1) * recommendationsPerPage;
+            const endIndex = startIndex + recommendationsPerPage;
+            const recommendationsToShow = filteredRecommendations.slice(startIndex, endIndex);
+            
+            if (recommendationsToShow.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="6" style="padding: 40px; color: var(--gray-dark); text-align: center;">
+                            <i class="fas fa-search" style="font-size: 2rem; margin-bottom: 10px; display: block;"></i>
+                            Tidak ada data rekomendasi yang sesuai dengan filter
+                        </td>
+                    </tr>
+                `;
+            } else {
+                tableBody.innerHTML = recommendationsToShow
+                    .map(recommendation => {
+                        const description = recommendation.deskripsi || '';
+                        
+                        return `
+                            <tr>
+                                <td>
+                                    <div style="font-weight: 500; color: var(--primary);">${recommendation.id}</div>
+                                </td>
+                                <td>
+                                    <span class="badge ${getCategoryBadgeClass(recommendation.kategori)}">
+                                        ${recommendation.kategori || '-'}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div style="font-weight: 500; color: var(--dark);">${recommendation.judul || 'Untitled'}</div>
+                                </td>
+                                <td>
+                                    <div style="max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                        ${description}
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge ${getRiskBadgeClass(recommendation.untuk_tingkat_risiko)}">
+                                        ${recommendation.untuk_tingkat_risiko || '-'}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="btn-group">
+                                        <button onclick="viewRecommendationDetail(${recommendation.id})" class="btn btn-primary btn-sm" title="Lihat Detail">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button onclick="editRecommendation(${recommendation.id})" class="btn btn-warning btn-sm" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button onclick="deleteRecommendation(${recommendation.id}, '${recommendation.judul}')" class="btn btn-danger btn-sm" title="Hapus">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+                    }).join('');
+            }
+        }
+
+        // =============================
+        // 🔹 Render grid view
+        // =============================
+        function renderGridView() {
+            const gridContainer = document.getElementById('recommendationsGrid');
+            
+            // Calculate pagination
+            const startIndex = (currentPage - 1) * recommendationsPerPage;
+            const endIndex = startIndex + recommendationsPerPage;
+            const recommendationsToShow = filteredRecommendations.slice(startIndex, endIndex);
+            
+            if (recommendationsToShow.length === 0) {
+                gridContainer.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--gray-dark);">
+                        <i class="fas fa-search" style="font-size: 3rem; margin-bottom: 15px; display: block; opacity: 0.5;"></i>
+                        <h3>Tidak ada data rekomendasi yang sesuai dengan filter</h3>
+                    </div>
+                `;
+            } else {
+                gridContainer.innerHTML = recommendationsToShow
+                    .map(recommendation => {
+                        const categoryColor = getCategoryColor(recommendation.kategori);
+                        const categoryBackground = getCategoryBackground(recommendation.kategori);
+                        const categoryIcon = getCategoryIcon(recommendation.kategori);
+                        
+                        return `
+                            <div class="recommendation-card" style="border-left-color: ${categoryColor};">
+                                <div class="recommendation-header">
+                                    <div class="recommendation-icon" style="background: ${categoryBackground}; color: ${categoryColor};">
+                                        <i class="${categoryIcon}"></i>
+                                    </div>
+                                    <div class="recommendation-title">
+                                        <h4>${recommendation.judul || 'Untitled'}</h4>
+                                        <div class="recommendation-category">${recommendation.kategori || '-'}</div>
+                                    </div>
+                                </div>
+                                <div class="recommendation-description">
+                                    ${recommendation.deskripsi || 'Tidak ada deskripsi'}
+                                </div>
+                                <div class="recommendation-footer">
+                                    <span class="badge ${getRiskBadgeClass(recommendation.untuk_tingkat_risiko)}">
+                                        ${recommendation.untuk_tingkat_risiko || '-'}
+                                    </span>
+                                    <div class="btn-group">
+                                        <button onclick="viewRecommendationDetail(${recommendation.id})" class="btn btn-primary btn-sm">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button onclick="editRecommendation(${recommendation.id})" class="btn btn-warning btn-sm">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button onclick="deleteRecommendation(${recommendation.id}, '${recommendation.judul}')" class="btn btn-danger btn-sm">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+            }
+        }
+
+        // =============================
+        // 🔹 Update informasi pagination
+        // =============================
+        function updatePaginationInfo() {
+            const totalPages = Math.ceil(filteredRecommendations.length / recommendationsPerPage);
+            document.getElementById('pageInfo').textContent = `Halaman ${currentPage} dari ${totalPages}`;
+            
+            // Disable/enable pagination buttons
+            document.getElementById('prevBtn').disabled = currentPage === 1;
+            document.getElementById('nextBtn').disabled = currentPage === totalPages || totalPages === 0;
+        }
+
+        // =============================
+        // 🔹 Filter data rekomendasi
+        // =============================
+        function applyFilters() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const categoryValue = document.getElementById('categoryFilter').value;
+            const riskValue = document.getElementById('riskFilter').value;
+            
+            filteredRecommendations = recommendationsData.filter(recommendation => {
+                const recommendationTitle = (recommendation.judul || '').toLowerCase();
+                const recommendationDesc = (recommendation.deskripsi || '').toLowerCase();
+                const recommendationCategory = recommendation.kategori;
+                const recommendationRisk = recommendation.untuk_tingkat_risiko;
+                
+                const matchesSearch = recommendationTitle.includes(searchTerm) || recommendationDesc.includes(searchTerm);
+                const matchesCategory = !categoryValue || recommendationCategory === categoryValue;
+                const matchesRisk = !riskValue || recommendationRisk === riskValue;
+                
+                return matchesSearch && matchesCategory && matchesRisk;
+            });
+            
+            currentPage = 1;
+            renderRecommendations();
+        }
+
+        // =============================
+        // 🔹 Reset filter
+        // =============================
+        function resetFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('categoryFilter').value = '';
+            document.getElementById('riskFilter').value = '';
+            filteredRecommendations = [...recommendationsData];
+            currentPage = 1;
+            renderRecommendations();
+            UIController.showMessage('Filter telah direset', 'info');
+        }
+
+        // =============================
+        // 🔹 Pagination functions
+        // =============================
+        function previousPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                renderRecommendations();
+            }
+        }
+
+        function nextPage() {
+            const totalPages = Math.ceil(filteredRecommendations.length / recommendationsPerPage);
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderRecommendations();
+            }
+        }
+
+        // =============================
+        // 🔹 Show Add Recommendation Modal
+        // =============================
+        function showAddModal() {
+            document.getElementById('recommendationModalTitle').textContent = 'Tambah Rekomendasi Baru';
+            document.getElementById('recommendationForm').reset();
+            document.getElementById('recommendationId').value = '';
+            document.getElementById('recommendationModal').classList.add('show');
+        }
+
+        // =============================
+        // 🔹 Close Recommendation Modal
+        // =============================
+        function closeRecommendationModal() {
+            document.getElementById('recommendationModal').classList.remove('show');
+            document.getElementById('recommendationForm').reset();
+        }
+
+        // =============================
+        // 🔹 Edit Recommendation
+        // =============================
+        async function editRecommendation(id) {
+            try {
+                const recommendation = await RecommendationService.getRecommendationById(id);
+                
+                document.getElementById('recommendationModalTitle').textContent = 'Edit Rekomendasi';
+                document.getElementById('recommendationId').value = recommendation.id;
+                document.getElementById('recommendationCategory').value = recommendation.kategori;
+                document.getElementById('recommendationTitle').value = recommendation.judul;
+                document.getElementById('recommendationDescription').value = recommendation.deskripsi || '';
+                document.getElementById('recommendationRiskLevel').value = recommendation.untuk_tingkat_risiko;
+                document.getElementById('recommendationTips').value = recommendation.tips || '';
+                
+                document.getElementById('recommendationModal').classList.add('show');
+                
+            } catch (error) {
+                console.error('❌ Error loading recommendation:', error);
+                UIController.showMessage('Gagal memuat data rekomendasi', 'error');
+            }
+        }
+
+        // =============================
+        // 🔹 Save Recommendation (Create/Update)
+        // =============================
+        async function saveRecommendation(event) {
+            event.preventDefault();
+            
+            const recommendationId = document.getElementById('recommendationId').value;
+            const recommendationData = {
+                kategori: document.getElementById('recommendationCategory').value,
+                judul: document.getElementById('recommendationTitle').value,
+                deskripsi: document.getElementById('recommendationDescription').value,
+                untuk_tingkat_risiko: document.getElementById('recommendationRiskLevel').value,
+                tips: document.getElementById('recommendationTips').value || null
+            };
+            
+            // Validasi data
+            if (recommendationData.judul.length < 3) {
+                Toast.show('Judul minimal 3 karakter', 'error');
+                return;
+            }
+            
+            if (recommendationData.deskripsi.length < 10) {
+                Toast.show('Deskripsi minimal 10 karakter', 'error');
+                return;
+            }
+            
+            try {
+                if (recommendationId) {
+                    // Update existing recommendation
+                    await RecommendationService.update(recommendationId, recommendationData);
+                    Toast.show('Rekomendasi berhasil diperbarui!', 'success');
+                } else {
+                    // Create new recommendation
+                    await RecommendationService.create(recommendationData);
+                    Toast.show('Rekomendasi berhasil ditambahkan!', 'success');
+                }
+                
+                closeRecommendationModal();
+                loadRecommendationsData();
+                
+            } catch (error) {
+                console.error('❌ Error saving recommendation:', error);
+                Toast.show(`Gagal menyimpan rekomendasi: ${error.message}`, 'error');
+            }
+        }
+
+        // =============================
+        // 🔹 View recommendation detail
+        // =============================
+        async function viewRecommendationDetail(id) {
+            try {
+                const recommendation = await RecommendationService.getRecommendationById(id);
+                const categoryColor = getCategoryColor(recommendation.kategori);
+                
+                document.getElementById('detailModalTitle').textContent = `Detail: ${recommendation.judul}`;
+                
+                document.getElementById('detailContent').innerHTML = `
+                    <div style="display: grid; gap: 20px;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                            <div>
+                                <div style="background: ${getCategoryBackground(recommendation.kategori)}; padding: 20px; border-radius: 8px; border-left: 4px solid ${categoryColor};">
+                                    <h4 style="margin-bottom: 15px; color: ${categoryColor};">Informasi Dasar</h4>
+                                    <p><strong>Kategori:</strong> 
+                                        <span class="badge ${getCategoryBadgeClass(recommendation.kategori)}">
+                                            ${recommendation.kategori || '-'}
+                                        </span>
+                                    </p>
+                                    <p><strong>Untuk Tingkat Risiko:</strong> 
+                                        <span class="badge ${getRiskBadgeClass(recommendation.untuk_tingkat_risiko)}">
+                                            ${recommendation.untuk_tingkat_risiko || '-'}
+                                        </span>
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <div style="background: #fff3e0; padding: 20px; border-radius: 8px; border-left: 4px solid var(--warning);">
+                                    <h4 style="margin-bottom: 15px; color: var(--warning);">Metadata</h4>
+                                    <p><strong>ID:</strong> ${recommendation.id}</p>
+                                    <p><strong>Tanggal Dibuat:</strong> ${formatDate(recommendation.created_at)}</p>
+                                    <p><strong>Tanggal Diupdate:</strong> ${formatDate(recommendation.updated_at)}</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="background: #e3f2fd; padding: 20px; border-radius: 8px; border-left: 4px solid var(--primary);">
+                            <h4 style="margin-bottom: 10px; color: var(--primary);">Judul</h4>
+                            <p style="font-weight: 500; font-size: 1.1rem;">${recommendation.judul}</p>
+                        </div>
+                        
+                        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
+                            <h4 style="margin-bottom: 10px; color: var(--primary);">Deskripsi</h4>
+                            <p style="white-space: pre-line;">${recommendation.deskripsi || 'Tidak ada deskripsi'}</p>
+                        </div>
+                        
+                        ${recommendation.tips ? `
+                            <div style="background: #e8f5e9; padding: 20px; border-radius: 8px; border-left: 4px solid var(--success);">
+                                <h4 style="margin-bottom: 10px; color: var(--success);">Tips Tambahan</h4>
+                                <p style="white-space: pre-line;">${recommendation.tips}</p>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+
+                document.getElementById('detailModal').classList.add('show');
+                
+            } catch (error) {
+                console.error('❌ Error loading recommendation:', error);
+                UIController.showMessage('Gagal memuat detail rekomendasi', 'error');
+            }
+        }
+
+        // =============================
+        // 🔹 Format tanggal untuk display
+        // =============================
+        function formatDate(dateString) {
+            if (!dateString) return '-';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('id-ID', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // =============================
+        // 🔹 Close detail modal
+        // =============================
+        function closeDetailModal() {
+            document.getElementById('detailModal').classList.remove('show');
+        }
+
+        // =============================
+        // 🔹 Show delete confirmation modal
+        // =============================
+        function showDeleteModal(id, recommendationTitle) {
+            document.getElementById('deleteMessage').textContent = 
+                `Apakah Anda yakin ingin menghapus rekomendasi "${recommendationTitle}"?`;
+            document.getElementById('deleteModal').classList.add('show');
+            
+            // Setup delete confirmation
+            const confirmBtn = document.getElementById('confirmDeleteBtn');
+            confirmBtn.onclick = () => deleteRecommendationConfirmed(id);
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').classList.remove('show');
+        }
+
+        // =============================
+        // 🔹 Delete recommendation
+        // =============================
+        function deleteRecommendation(id, recommendationTitle) {
+            showDeleteModal(id, recommendationTitle);
+        }
+
+        async function deleteRecommendationConfirmed(id) {
+            closeDeleteModal();
+            
+            try {
+                await RecommendationService.delete(id);
+                Toast.show('Rekomendasi berhasil dihapus!', 'success');
+                loadRecommendationsData(); // Reload data
+            } catch (error) {
+                console.error('❌ Error deleting recommendation:', error);
+                Toast.show(`Gagal menghapus rekomendasi: ${error.message}`, 'error');
+            }
+        }
+
+        // =============================
+        // 🚀 Initialize application
+        // =============================
+        function initializePage() {
+            console.log('🎯 Initializing recommendations page...');
+            
+            // Check session first
+            if (!SessionManager.checkSession()) {
+                console.log('🔀 Redirecting to login page...');
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            try {
+                // Setup UI
+                initializeDashboard();
+                
+                // Load data
+                loadRecommendationsData();
+                
+                console.log('🎉 Recommendations page fully initialized');
+                
+            } catch (error) {
+                console.error('❌ Error initializing recommendations page:', error);
+                UIController.showMessage('Terjadi kesalahan saat memuat halaman', 'error');
+            }
+        }
+
+        // =============================
         // 🚀 Jalankan saat halaman dimuat
         // =============================
-        document.addEventListener("DOMContentLoaded", function() {
-            // Inisialisasi dashboard dan session
-            initializeDashboard();
-            
-            // Muat data rekomendasi
-            loadRecommendationsData();
-            
-            // Event listener untuk search input
-            document.getElementById('searchInput').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    applyFilters();
-                }
-            });
-
-            // Close modal ketika klik di luar modal
-            document.getElementById('recommendationModal').addEventListener('click', function(e) {
-                if (e.target === this) {
-                    hideModal();
-                }
-            });
-            
-            // Close modal dengan ESC key
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    hideModal();
-                }
-            });
-        });
+        document.addEventListener("DOMContentLoaded", initializePage);
     </script>
 </body>
 </html>
