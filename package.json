@@ -1,11 +1,12 @@
 {
   "name": "sistem-diagnosa",
   "version": "1.0.0",
-  "description": "Sistem pakar diagnosa penyakit",
+  "description": "Diabetes Diagnosis System",
   "main": "backend/server.js",
   "scripts": {
     "start": "node backend/server.js",
-    "dev": "nodemon backend/server.js"
+    "dev": "nodemon backend/server.js",
+    "test": "echo \"No tests specified\""
   },
   "dependencies": {
     "express": "^4.18.2",
