@@ -1,212 +1,156 @@
-// server.js - VERSION FOR RAILWAY DEPLOYMENT
+// server.js - SIMPLIFIED VERSION FOR RAILWAY
 const express = require('express');
 const cors = require('cors');
-const bodyParser = require('body-parser');
 const path = require('path');
+const fs = require('fs');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// ==================== MIDDLEWARE ====================
+// ==================== LOGGING MIDDLEWARE ====================
+app.use((req, res, next) => {
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+    next();
+});
+
+// ==================== BASIC MIDDLEWARE ====================
 app.use(cors());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// Serve static files from frontend folder (for Railway)
-app.use(express.static(path.join(__dirname, '..', 'frontend')));
+// ==================== STATIC FILES ====================
+const staticPath = path.join(__dirname, '../frontend');
+console.log('📁 Looking for frontend at:', staticPath);
 
-// ==================== DATABASE CONFIGURATION ====================
-console.log('🔧 Database Configuration:');
-console.log('NODE_ENV:', process.env.NODE_ENV);
-console.log('DATABASE_URL available:', !!process.env.DATABASE_URL);
-
-let db;
-
-// Database setup based on environment
-if (process.env.NODE_ENV === 'production' && process.env.DATABASE_URL) {
-    // PRODUCTION: Use Railway PostgreSQL/MySQL
-    console.log('🚀 Using Railway database from DATABASE_URL');
-    
-    // Check if it's MySQL or PostgreSQL
-    if (process.env.DATABASE_URL.includes('mysql://')) {
-        // MySQL (Railway)
-        const mysql = require('mysql2');
-        db = mysql.createConnection(process.env.DATABASE_URL);
-        
-        db.connect((err) => {
-            if (err) {
-                console.error('❌ MySQL Connection Error:', err.message);
-                setupMockDatabase();
-            } else {
-                console.log('✅ Connected to Railway MySQL database');
-            }
-        });
-    } else if (process.env.DATABASE_URL.includes('postgres://')) {
-        // PostgreSQL (Railway)
-        console.log('📊 PostgreSQL detected - using mock data for now');
-        setupMockDatabase();
-    }
+if (fs.existsSync(staticPath)) {
+    console.log('✅ Frontend folder found');
+    app.use(express.static(staticPath));
 } else {
-    // DEVELOPMENT: Use mock database for testing
-    console.log('💻 Development mode: Using mock database');
-    setupMockDatabase();
+    console.log('⚠️  Frontend folder not found, serving API only');
+    // Fallback for missing frontend
+    app.get('/', (req, res) => {
+        res.send(`
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Diabetes Diagnosis System</title>
+                <style>
+                    body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
+                    .container { max-width: 800px; margin: 0 auto; }
+                    .endpoint { background: #f5f5f5; padding: 10px; margin: 10px; border-radius: 5px; }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <h1>🚀 Diabetes Diagnosis API</h1>
+                    <p>Backend API is running successfully!</p>
+                    <p>If you see this page, frontend files are not deployed yet.</p>
+                    
+                    <h3>📡 Available Endpoints:</h3>
+                    <div class="endpoint"><strong>GET /health</strong> - Health check</div>
+                    <div class="endpoint"><strong>GET /api/info</strong> - API information</div>
+                    <div class="endpoint"><strong>GET /test-db</strong> - Test database</div>
+                    <div class="endpoint"><strong>POST /admin/login</strong> - Admin login</div>
+                    
+                    <h3>🔧 Environment:</h3>
+                    <p>Port: ${PORT}</p>
+                    <p>NODE_ENV: ${process.env.NODE_ENV || 'development'}</p>
+                </div>
+            </body>
+            </html>
+        `);
+    });
 }
 
-// Mock database for Railway deployment
-function setupMockDatabase() {
-    console.log('📁 Setting up mock in-memory database');
-    
-    db = {
-        // Mock query function
-        query: (sql, params, callback) => {
-            console.log(`📝 Mock DB Query: ${sql}`);
-            
-            // Simulate async delay
-            setTimeout(() => {
-                // Handle different queries
-                if (sql.includes('SELECT 1 + 1')) {
-                    callback(null, [{ result: 2 }]);
-                } 
-                else if (sql.includes('SELECT * FROM admin')) {
-                    callback(null, [
-                        { name: 'admin', sandi: 111111 },
-                        { name: 'inay', sandi: 111111 }
-                    ]);
-                }
-                else if (sql.includes('SELECT * FROM users')) {
-                    callback(null, [
-                        { id: 1, nama_lengkap: 'John Doe', usia: 30, jenis_kelamin: 'L', created_at: new Date() },
-                        { id: 2, nama_lengkap: 'Jane Smith', usia: 25, jenis_kelamin: 'P', created_at: new Date() }
-                    ]);
-                }
-                else if (sql.includes('SELECT * FROM symptoms')) {
-                    callback(null, [
-                        { id: 1, kode_gejala: 'G01', nama_gejala: 'Sering Haus', bobot: 2, tingkat_keparahan: 'Sedang' },
-                        { id: 2, kode_gejala: 'G02', nama_gejala: 'Sering Buang Air', bobot: 3, tingkat_keparahan: 'Tinggi' },
-                        { id: 3, kode_gejala: 'G03', nama_gejala: 'Lelah Berlebihan', bobot: 2, tingkat_keparahan: 'Sedang' }
-                    ]);
-                }
-                else if (sql.includes('SELECT * FROM recommendations')) {
-                    callback(null, [
-                        { id: 1, kategori: 'Diet', judul: 'Kurangi Gula', deskripsi: 'Konsumsi gula maksimal 25g/hari', untuk_tingkat_risiko: 'Tinggi' },
-                        { id: 2, kategori: 'Olahraga', judul: 'Jalan Pagi', deskripsi: 'Lakukan jalan kaki 30 menit setiap pagi', untuk_tingkat_risiko: 'Sedang' }
-                    ]);
-                }
-                else if (sql.includes('SELECT * FROM diagnoses')) {
-                    callback(null, [
-                        { id: 1, user_id: 1, tingkat_risiko: 'Tinggi', skor_akhir: 85, created_at: new Date() },
-                        { id: 2, user_id: 2, tingkat_risiko: 'Sedang', skor_akhir: 65, created_at: new Date() }
-                    ]);
-                }
-                else if (sql.includes('INSERT INTO') || sql.includes('UPDATE') || sql.includes('DELETE')) {
-                    // Mock successful write operation
-                    callback(null, { insertId: 999, affectedRows: 1 });
-                }
-                else {
-                    // Default empty result
-                    callback(null, []);
-                }
-            }, 100);
-        }
-    };
-    
-    console.log('✅ Mock database ready');
-}
+// ==================== SIMPLE DATABASE MOCK ====================
+console.log('💡 Using in-memory database (mock mode)');
 
-// ==================== HELPER FUNCTIONS ====================
+const mockDB = {
+    query: (sql, params, callback) => {
+        console.log(`📝 Mock query: ${sql.substring(0, 50)}...`);
+        
+        setTimeout(() => {
+            // Handle different queries
+            if (sql.includes('SELECT 1 + 1')) {
+                callback(null, [{ result: 2 }]);
+            } 
+            else if (sql.includes('admin')) {
+                callback(null, [
+                    { name: 'admin', sandi: 111111 },
+                    { name: 'inay', sandi: 111111 }
+                ]);
+            }
+            else if (sql.includes('users')) {
+                callback(null, [
+                    { id: 1, nama_lengkap: 'John Doe', usia: 30, jenis_kelamin: 'L' },
+                    { id: 2, nama_lengkap: 'Jane Smith', usia: 25, jenis_kelamin: 'P' }
+                ]);
+            }
+            else if (sql.includes('symptoms')) {
+                callback(null = [
+                    { id: 1, kode_gejala: 'G01', nama_gejala: 'Sering Haus', bobot: 2 },
+                    { id: 2, kode_gejala: 'G02', nama_gejala: 'Sering Buang Air', bobot: 3 },
+                    { id: 3, kode_gejala: 'G03', nama_gejala: 'Lelah Berlebihan', bobot: 2 }
+                ]);
+            }
+            else if (sql.includes('INSERT') || sql.includes('UPDATE') || sql.includes('DELETE')) {
+                callback(null, { insertId: 1, affectedRows: 1 });
+            }
+            else {
+                callback(null, []);
+            }
+        }, 50);
+    }
+};
+
+// Database helper
 const executeQuery = (sql, params = []) => {
     return new Promise((resolve, reject) => {
-        if (!db || !db.query) {
-            reject(new Error('Database not initialized'));
-            return;
-        }
-        
-        db.query(sql, params, (err, results) => {
-            if (err) {
-                console.error('❌ Database Error:', err.message);
-                console.error('SQL:', sql);
-                reject(err);
-            } else {
-                resolve(results);
-            }
+        mockDB.query(sql, params, (err, results) => {
+            if (err) reject(err);
+            else resolve(results);
         });
     });
 };
 
-// ==================== FRONTEND ROUTES ====================
-// Serve HTML pages from frontend folder
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'frontend', 'index.html'));
-});
+// ==================== API ENDPOINTS ====================
 
-app.get('/admin', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'frontend', 'admin.html'));
-});
-
-app.get('/login', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'frontend', 'login.html'));
-});
-
-app.get('/diagnoses', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'frontend', 'diagnoses.html'));
-});
-
-app.get('/diagnosis', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'frontend', 'diagnosis.html'));
-});
-
-app.get('/diseases', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'frontend', 'diseases.html'));
-});
-
-app.get('/gejala', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'frontend', 'gejala.html'));
-});
-
-app.get('/pengguna', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'frontend', 'pengguna.html'));
-});
-
-app.get('/recommendations', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'frontend', 'recommendations.html'));
-});
-
-// ==================== API ROUTES ====================
-
-// 1. HEALTH CHECK (Required for Railway)
+// 1. HEALTH CHECK (Railway requires this!)
 app.get('/health', (req, res) => {
-    res.json({ 
-        status: 'OK', 
+    res.json({
+        status: 'healthy',
+        service: 'diabetes-diagnosis-api',
         timestamp: new Date().toISOString(),
-        service: 'Diabetes Diagnosis API',
-        environment: process.env.NODE_ENV || 'development'
+        environment: process.env.NODE_ENV || 'development',
+        port: PORT,
+        database: 'mock'
     });
 });
 
-// 2. TEST DATABASE CONNECTION
+// 2. TEST ENDPOINT
 app.get('/test-db', async (req, res) => {
     try {
         const result = await executeQuery('SELECT 1 + 1 AS result');
-        res.json({ 
-            success: true, 
-            message: 'Database connection successful',
-            result: result[0],
-            environment: process.env.NODE_ENV
+        res.json({
+            success: true,
+            message: 'Database test successful',
+            data: result[0],
+            mode: 'mock-database'
         });
     } catch (error) {
-        res.status(500).json({ 
-            success: false, 
-            error: 'Database test failed',
-            message: error.message
+        res.json({
+            success: false,
+            message: 'Database test failed',
+            error: error.message
         });
     }
 });
 
-// 3. ADMIN AUTHENTICATION
+// 3. ADMIN LOGIN
 app.get('/admin/login', (req, res) => {
     res.json({
         message: 'Admin login endpoint',
-        method: 'POST to this endpoint with {name, sandi}',
+        method: 'POST with {name, sandi}',
         test_accounts: [
             { name: 'admin', sandi: 111111 },
             { name: 'inay', sandi: 111111 }
@@ -219,22 +163,18 @@ app.post('/admin/login', async (req, res) => {
         const { name, sandi } = req.body;
         
         if (!name || !sandi) {
-            return res.status(400).json({ 
-                success: false, 
-                error: 'Name and password required' 
+            return res.status(400).json({
+                success: false,
+                error: 'Name and password required'
             });
         }
         
-        // Convert sandi to number
-        const sandiNumber = parseInt(sandi);
+        const results = await executeQuery('SELECT * FROM admin WHERE name = ?', [name]);
         
-        const query = 'SELECT * FROM admin WHERE name = ? AND sandi = ?';
-        const results = await executeQuery(query, [name, sandiNumber]);
-        
-        if (results.length === 0) {
-            return res.status(401).json({ 
-                success: false, 
-                error: 'Invalid credentials' 
+        if (results.length === 0 || results[0].sandi != sandi) {
+            return res.status(401).json({
+                success: false,
+                error: 'Invalid credentials'
             });
         }
         
@@ -245,21 +185,21 @@ app.post('/admin/login', async (req, res) => {
         });
         
     } catch (error) {
-        res.status(500).json({ 
-            success: false, 
+        res.status(500).json({
+            success: false,
             error: 'Login failed',
-            message: error.message 
+            message: error.message
         });
     }
 });
 
-// 4. USERS ENDPOINTS
+// 4. USERS
 app.get('/api/users', async (req, res) => {
     try {
-        const users = await executeQuery('SELECT * FROM users ORDER BY created_at DESC');
+        const users = await executeQuery('SELECT * FROM users ORDER BY id DESC');
         res.json(users);
     } catch (error) {
-        res.status(500).json({ error: 'Failed to fetch users', details: error.message });
+        res.status(500).json({ error: error.message });
     }
 });
 
@@ -268,213 +208,166 @@ app.post('/api/users', async (req, res) => {
         const { nama_lengkap, usia, jenis_kelamin } = req.body;
         
         if (!nama_lengkap || !usia || !jenis_kelamin) {
-            return res.status(400).json({ error: 'Missing required fields' });
+            return res.status(400).json({ error: 'Missing fields' });
         }
         
-        const query = 'INSERT INTO users (nama_lengkap, usia, jenis_kelamin) VALUES (?, ?, ?)';
-        const result = await executeQuery(query, [nama_lengkap, usia, jenis_kelamin]);
+        const result = await executeQuery(
+            'INSERT INTO users (nama_lengkap, usia, jenis_kelamin) VALUES (?, ?, ?)',
+            [nama_lengkap, usia, jenis_kelamin]
+        );
         
         res.json({
             success: true,
-            message: 'User created successfully',
+            message: 'User created',
             id: result.insertId
         });
     } catch (error) {
-        res.status(500).json({ error: 'Failed to create user', details: error.message });
+        res.status(500).json({ error: error.message });
     }
 });
 
-// 5. SYMPTOMS ENDPOINTS
+// 5. SYMPTOMS
 app.get('/api/symptoms', async (req, res) => {
     try {
         const symptoms = await executeQuery('SELECT * FROM symptoms ORDER BY id');
         res.json(symptoms);
     } catch (error) {
-        res.status(500).json({ error: 'Failed to fetch symptoms', details: error.message });
+        res.status(500).json({ error: error.message });
     }
 });
 
-// 6. DIAGNOSES ENDPOINTS
-app.get('/api/diagnoses', async (req, res) => {
-    try {
-        const query = `
-            SELECT d.*, u.nama_lengkap 
-            FROM diagnoses d 
-            LEFT JOIN users u ON d.user_id = u.id 
-            ORDER BY d.created_at DESC
-        `;
-        const diagnoses = await executeQuery(query);
-        res.json(diagnoses);
-    } catch (error) {
-        res.status(500).json({ error: 'Failed to fetch diagnoses', details: error.message });
-    }
-});
-
-// 7. RECOMMENDATIONS ENDPOINTS
-app.get('/api/recommendations', async (req, res) => {
-    try {
-        const recommendations = await executeQuery('SELECT * FROM recommendations ORDER BY id');
-        res.json(recommendations);
-    } catch (error) {
-        res.status(500).json({ error: 'Failed to fetch recommendations', details: error.message });
-    }
-});
-
-// 8. FORWARD CHAINING DIAGNOSIS
+// 6. DIAGNOSIS PROCESSING
 app.post('/api/diagnosis/process', async (req, res) => {
     try {
         const { user_id, symptoms } = req.body;
         
-        // Mock forward chaining logic
-        const faktaKode = symptoms || ['G01', 'G02'];
-        let tingkat_risiko = 'Rendah';
-        let skor_akhir = 0;
-
-        // Rule-based forward chaining
-        if (faktaKode.includes('G01') && faktaKode.includes('G02') && faktaKode.includes('G06')) {
-            tingkat_risiko = 'Tinggi';
-            skor_akhir = 85;
-        } else if (faktaKode.includes('G01') && faktaKode.includes('G06')) {
-            tingkat_risiko = 'Tinggi';
-            skor_akhir = 80;
-        } else if (faktaKode.includes('G02') && faktaKode.includes('G03')) {
-            tingkat_risiko = 'Sedang';
-            skor_akhir = 65;
-        } else if (faktaKode.includes('G02') && faktaKode.includes('G06')) {
-            tingkat_risiko = 'Sedang';
-            skor_akhir = 60;
-        } else if (faktaKode.includes('G01')) {
-            tingkat_risiko = 'Sedang';
-            skor_akhir = 55;
-        } else {
-            tingkat_risiko = 'Rendah';
-            skor_akhir = 40;
-        }
-
-        // Calculate score based on symptoms
-        faktaKode.forEach((kode, index) => {
-            skor_akhir += (index + 1) * 5;
-        });
-
-        // Mock save to database
-        const insertQuery = 'INSERT INTO diagnoses (user_id, tingkat_risiko, skor_akhir) VALUES (?, ?, ?)';
-        await executeQuery(insertQuery, [user_id || 1, tingkat_risiko, skor_akhir]);
-
+        // Simple diagnosis logic
+        const score = (symptoms || []).length * 20;
+        let risk = 'Rendah';
+        
+        if (score > 70) risk = 'Tinggi';
+        else if (score > 40) risk = 'Sedang';
+        
+        // Save to database
+        await executeQuery(
+            'INSERT INTO diagnoses (user_id, tingkat_risiko, skor_akhir) VALUES (?, ?, ?)',
+            [user_id || 1, risk, score]
+        );
+        
         res.json({
             success: true,
-            message: 'Diagnosis processed successfully',
-            metode: 'Forward Chaining',
-            fakta_gejala: faktaKode,
-            tingkat_risiko,
-            skor_akhir,
+            message: 'Diagnosis complete',
+            tingkat_risiko: risk,
+            skor_akhir: score,
+            gejala: symptoms || [],
             rekomendasi: 'Konsultasi dengan dokter untuk pemeriksaan lebih lanjut'
         });
     } catch (error) {
-        res.status(500).json({ 
-            success: false, 
-            error: 'Diagnosis processing failed', 
-            details: error.message 
+        res.status(500).json({
+            success: false,
+            error: error.message
         });
     }
 });
 
-// 9. DASHBOARD STATISTICS
-app.get('/api/stats', async (req, res) => {
+// 7. DIAGNOSES HISTORY
+app.get('/api/diagnoses', async (req, res) => {
     try {
-        const stats = {
-            total_users: 15,
-            total_diagnoses: 42,
-            total_symptoms: 8,
-            total_recommendations: 6,
-            risk_distribution: [
-                { tingkat_risiko: 'Tinggi', count: 10 },
-                { tingkat_risiko: 'Sedang', count: 20 },
-                { tingkat_risiko: 'Rendah', count: 12 }
-            ],
-            latest_users: [
-                { id: 1, nama_lengkap: 'Ahmad', usia: 35, jenis_kelamin: 'L' },
-                { id: 2, nama_lengkap: 'Siti', usia: 28, jenis_kelamin: 'P' }
-            ],
-            latest_diagnoses: [
-                { id: 1, nama_lengkap: 'Ahmad', tingkat_risiko: 'Tinggi', skor_akhir: 85 },
-                { id: 2, nama_lengkap: 'Siti', tingkat_risiko: 'Sedang', skor_akhir: 65 }
-            ]
-        };
-        
-        res.json(stats);
+        const diagnoses = await executeQuery(`
+            SELECT d.*, u.nama_lengkap 
+            FROM diagnoses d 
+            LEFT JOIN users u ON d.user_id = u.id 
+            ORDER BY d.id DESC
+        `);
+        res.json(diagnoses);
     } catch (error) {
-        res.status(500).json({ error: 'Failed to fetch stats', details: error.message });
+        res.status(500).json({ error: error.message });
     }
 });
 
-// 10. API INFO ENDPOINT
+// 8. RECOMMENDATIONS
+app.get('/api/recommendations', async (req, res) => {
+    try {
+        const recommendations = await executeQuery('SELECT * FROM recommendations');
+        res.json(recommendations);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// 9. API INFO
 app.get('/api/info', (req, res) => {
     res.json({
-        service: 'Diabetes Diagnosis Expert System API',
+        service: 'Diabetes Diagnosis Expert System',
         version: '2.0.0',
-        status: 'operational',
+        status: 'online',
         environment: process.env.NODE_ENV || 'development',
         deployment: 'Railway',
-        endpoints: {
-            auth: ['GET /admin/login', 'POST /admin/login'],
-            users: ['GET /api/users', 'POST /api/users'],
-            symptoms: ['GET /api/symptoms'],
-            diagnoses: ['GET /api/diagnoses', 'POST /api/diagnosis/process'],
-            recommendations: ['GET /api/recommendations'],
-            utility: ['GET /health', 'GET /test-db', 'GET /api/stats']
-        },
-        frontend_pages: ['/', '/admin', '/login', '/diagnoses', '/diagnosis', '/gejala', '/pengguna', '/recommendations']
+        endpoints: [
+            'GET    /health',
+            'GET    /test-db',
+            'GET    /admin/login',
+            'POST   /admin/login',
+            'GET    /api/users',
+            'POST   /api/users',
+            'GET    /api/symptoms',
+            'POST   /api/diagnosis/process',
+            'GET    /api/diagnoses',
+            'GET    /api/recommendations',
+            'GET    /api/info'
+        ],
+        timestamp: new Date().toISOString()
+    });
+});
+
+// 10. STATISTICS
+app.get('/api/stats', (req, res) => {
+    res.json({
+        total_users: 15,
+        total_diagnoses: 42,
+        total_symptoms: 8,
+        risk_distribution: {
+            tinggi: 10,
+            sedang: 20,
+            rendah: 12
+        }
     });
 });
 
 // ==================== ERROR HANDLING ====================
-// 404 Handler
 app.use((req, res) => {
-    res.status(404).json({ 
+    res.status(404).json({
         error: 'Endpoint not found',
         path: req.path,
-        method: req.method,
-        available_endpoints: '/api/info'
+        available: '/api/info'
     });
 });
 
-// Global error handler
 app.use((err, req, res, next) => {
-    console.error('⚠️ Server Error:', err);
-    res.status(500).json({ 
+    console.error('Server error:', err);
+    res.status(500).json({
         error: 'Internal server error',
-        message: process.env.NODE_ENV === 'production' ? 'Something went wrong' : err.message
+        message: process.env.NODE_ENV === 'production' ? 'Contact administrator' : err.message
     });
 });
 
-// ==================== SERVER START ====================
-const server = app.listen(PORT, '0.0.0.0', () => {
-    console.log(`
-    ========================================
-    🚀 DIABETES DIAGNOSIS SYSTEM API
-    ========================================
-    ✅ Server is running!
-    📍 Port: ${PORT}
-    🌐 Environment: ${process.env.NODE_ENV || 'development'}
-    📁 Database: ${process.env.DATABASE_URL ? 'Railway Database' : 'Mock Database'}
-    🏠 Local URL: http://localhost:${PORT}
-    🔗 Health Check: http://localhost:${PORT}/health
-    📊 API Info: http://localhost:${PORT}/api/info
-    ========================================
-    `);
-    
-    // Test database connection
-    console.log('🧪 Testing database connection...');
-    executeQuery('SELECT 1 + 1 AS result')
-        .then(result => console.log('✅ Database test passed:', result[0]))
-        .catch(err => console.log('⚠️ Database test failed (using mock):', err.message));
+// ==================== START SERVER ====================
+app.listen(PORT, '0.0.0.0', () => {
+    console.log('\n' + '='.repeat(60));
+    console.log('🚀 DIABETES DIAGNOSIS SYSTEM');
+    console.log('='.repeat(60));
+    console.log(`✅ Server started successfully!`);
+    console.log(`📍 Port: ${PORT}`);
+    console.log(`🌐 Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`📁 Database: Mock database`);
+    console.log(`🔗 Local: http://localhost:${PORT}`);
+    console.log(`🩺 Health: http://localhost:${PORT}/health`);
+    console.log(`📊 API Info: http://localhost:${PORT}/api/info`);
+    console.log('='.repeat(60) + '\n');
 });
 
-// Graceful shutdown
+// Handle shutdown
 process.on('SIGTERM', () => {
-    console.log('👋 SIGTERM received. Shutting down gracefully...');
-    server.close(() => {
-        console.log('💤 Server shut down.');
-        process.exit(0);
-    });
+    console.log('👋 Shutting down gracefully...');
+    process.exit(0);
 });
