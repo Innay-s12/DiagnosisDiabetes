@@ -4,201 +4,777 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sistem Pakar Diagnosis Diabetes</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="config.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    /* --- CSS Utama & Reset --- */
+    :root {
+      --primary-color: #2563eb;
+      --border-radius-lg: 16px;
+      --border-radius-md: 12px;
+      --transition-speed: 0.3s;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* --- Komponen Header --- */
+    .header {
+      background: white;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      padding: 1rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    /* --- Styling Gambar & Hero --- */
+    .hero-image-container {
+      position: relative;
+      width: 100%;
+      height: 60vh; /* Tinggi responsif viewport */
+      min-height: 400px;
+      max-height: 500px;
+      border-radius: var(--border-radius-lg);
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      background-color: #f3f4f6; /* Placeholder color */
+    }
+    
+    .hero-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      transition: transform 0.8s ease;
+    }
+    
+    .hero-image-container:hover .hero-image {
+      transform: scale(1.05);
+    }
+    
+    .image-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 60%, transparent 100%);
+      color: rgb(255, 255, 255);
+      padding: 3rem 2rem 2rem;
+      z-index: 10;
+    }
+
+    /* --- Card & Grid System --- */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: var(--border-radius-lg);
+      box-shadow: 0 8px 32px rgba(31, 38, 135, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      height: 100%;
+    }
+
+    .image-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+    
+    .image-card {
+      border-radius: var(--border-radius-md);
+      overflow: hidden;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+      transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+      background: white;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .image-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 30px rgba(0, 0, 0, 0.12);
+    }
+    
+    .image-card img {
+      width: 100%;
+      height: 220px; /* Tinggi seragam */
+      object-fit: cover;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .image-card-content {
+      padding: 1.5rem;
+    }
+
+    /* --- Carousel --- */
+    .carousel-container {
+      position: relative;
+      width: 100%;
+      height: 450px;
+      border-radius: var(--border-radius-lg);
+      overflow: hidden;
+      margin: 2rem 0;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+      background-color: #e5e7eb;
+    }
+    
+    .carousel-slide {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      transition: opacity 0.8s ease-in-out;
+      display: flex; /* Fix for whitespace */
+    }
+    
+    .carousel-slide.active {
+      opacity: 1;
+      z-index: 1;
+    }
+    
+    .carousel-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .carousel-caption {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);
+      color: white;
+      padding: 3rem 2rem 1.5rem;
+      text-align: center;
+      z-index: 2;
+    }
+
+    .carousel-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255, 255, 255, 0.9);
+      border: none;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      z-index: 10;
+      transition: background 0.3s;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    
+    .carousel-nav:hover {
+      background: rgb(25, 163, 249);
+      transform: translateY(-50%) scale(1.1);
+    }
+    
+    .carousel-prev { left: 20px; }
+    .carousel-next { right: 20px; }
+    
+    .carousel-dots {
+      position: absolute;
+      bottom: 20px;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      z-index: 10;
+    }
+    
+    .carousel-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.4);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    
+    .carousel-dot.active {
+      background: white;
+      transform: scale(1.3);
+    }
+
+    /* --- Animations --- */
+    .floating {
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-15px); }
+    }
+    
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+    
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* --- Stats & Misc --- */
+    .stats-image-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin: 3rem 0;
+    }
+    
+    .stat-image-card {
+      position: relative;
+      border-radius: var(--border-radius-lg);
+      overflow: hidden;
+      height: 280px; /* Sedikit lebih tinggi */
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    
+    .stat-image-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s;
+    }
+
+    .stat-image-card:hover img {
+      transform: scale(1.1);
+    }
+    
+    .stat-image-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(30, 64, 175, 0.75); /* Blue tint overlay */
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+      text-align: center;
+      opacity: 0.95;
+      transition: opacity 0.3s;
+    }
+    
+    /* Buttons */
+    .btn-primary {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 50px;
+      font-weight: 600;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+    }
+    .btn-primary:hover {
+      background-color: #1d4ed8;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+
+    .btn-secondary {
+      background-color: transparent;
+      color: #4b5563;
+      border: 1px solid #d1d5db;
+      padding: 0.75rem 1.5rem;
+      border-radius: 50px;
+      font-weight: 600;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+    }
+    .btn-secondary:hover {
+      background-color: #f3f4f6;
+      border-color: #9ca3af;
+    }
+
+    /* Utility Helpers for Icons inside cards */
+    .icon-container {
+        min-width: 40px;
+        margin-right: 15px;
+    }
+
+    .feature-list li {
+        margin-bottom: 0.5rem;
+        position: relative;
+        padding-left: 1.5rem;
+    }
+    .feature-list li::before {
+        content: "•";
+        color: var(--primary-color);
+        font-weight: bold;
+        position: absolute;
+        left: 0;
+    }
+
+    /* CTA Section */
+    .cta-button {
+        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        color: white;
+        padding: 1rem 2rem;
+        border-radius: 50px;
+        font-weight: bold;
+        box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
+        transition: transform 0.2s;
+    }
+    .cta-button:hover {
+        transform: scale(1.05);
+    }
+    
+    /* Footer Images styling */
+    .footer-img-container {
+        overflow: hidden;
+        border-radius: var(--border-radius-md);
+        height: 160px;
+        margin-bottom: 1rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .footer-img-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+  </style>
 </head>
 
-<body class="min-h-screen flex flex-col">
-  <!-- Header -->
+<body class="min-h-screen flex flex-col bg-slate-50">
+  
   <header class="header">
-    <div class="container mx-auto flex justify-center items-center">
-      <div class="flex items-center space-x-3">
-        <h1 class="text-2xl font-bold text-center">Sistem Pakar Diabetes</h1>
+    <div class="container mx-auto flex justify-center items-center px-4">
+      <div class="flex items-center space-x-3 hover:scale-105 transition-transform duration-300">
+        <i class="fas fa-stethoscope text-3xl text-blue-600"></i>
+        <h1 class="text-2xl font-bold text-gray-800">Sistem Pakar Diabetes</h1>
+      </div>
+    </div>
   </header>
 
-  <!-- Hero Section -->
-  <section class="hero">
-    <div class="container mx-auto max-w-6xl">
-      <div class="flex flex-col md:flex-row items-center">
-        <div class="md:w-1/2 mb-10 md:mb-0 slide-in-left">
-          <h2 class="hero-title">
-            Deteksi Dini Risiko <span class="text-blue-200">Diabetes</span> Anda
+  <section class="hero py-8">
+    <div class="container mx-auto max-w-6xl px-4">
+      <div class="hero-image-container">
+        <img src="assets/pengecekan.jpg" 
+             alt="Ilustrasi Medis Diabetes" 
+             class="hero-image"
+             loading="eager">
+        <div class="image-overlay">
+          <h2 class="text-white text-3xl md:text-5xl font-bold mb-4 leading-tight">
+            Deteksi Dini Risiko <span class="text-blue-300">Diabetes</span> Anda
           </h2>
-          <p class="hero-subtitle">
-            Sistem pakar kami akan membantu Anda melakukan pemeriksaan awal terhadap kemungkinan diabetes berdasarkan gejala yang Anda alami.
-          </p>
-          <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-            <a href="diagnosis.html" class="btn-primary">
-              Mulai Diagnosis <i class="fas fa-arrow-right ml-2"></i>
-            </a>
-            <a href="#info" class="btn-secondary">
-              <i class="fas fa-info-circle mr-2"></i> Pelajari Lebih Lanjut
-            </a>
-          </div>
-        </div>
-        <div class="md:w-1/2 flex justify-center slide-in-right">
-          <div class="hero-image floating">
-            <div class="image-circle">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" class="w-48 h-48 text-white">
-                <path fill="currentColor" d="M224 256c70.7 0 128-57.3 128-128S294.7 0 224 0S96 57.3 96 128s57.3 128 128 128zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304H178.3zM528 240c17.7 0 32 14.3 32 32v48H496V272c0-17.7 14.3-32 32-32zm-80 32c0-44.2 35.8-80 80-80s80 35.8 80 80v48c17.7 0 32 14.3 32 32v128c0 17.7-14.3 32-32 32H448c-17.7 0-32-14.3-32-32V352c0-17.7 14.3-32 32-32V272z"/>
-              </svg>
-            </div>
-            <div class="decoration-circle circle-1"></div>
-            <div class="decoration-circle circle-2"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Informasi Diabetes -->
-  <section id="info" class="info-section">
-    <div class="container mx-auto max-w-6xl">
-      <div class="text-center mb-12 fade-in">
-        <h2 class="section-title">Apa Itu Diabetes?</h2>
-        <p class="section-subtitle">
-          Diabetes adalah salah satu sindrom yang ditandai dengan kelainan pada metabolik yang 
-          terganggu serta pada kenaikan konsentrasi gula darah yang abnormal yang disebabkan oleh defisiensi 
-          insulin, ataupun sensitivitas insulin yang rendah dari jaringan, maupun keduanya.
-        </p>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-        <div class="glass-card p-6 fade-in">
-          <div class="flex items-start mb-4">
-            <div class="icon-container">
-              <i class="fas fa-exclamation-triangle text-blue-600 text-xl"></i>
-            </div>
-            <div>
-              <h3 class="card-title">Faktor-faktor Penyebab Diabetes</h3>
-              <ul class="feature-list">
-                <li>Kehamilan</li>
-                <li>Kadar gula darah</li>
-                <li>Usia</li>
-                <li>Silsilah diabetes</li>
-                <li>Berat badan</li>
-                <li>Kondisi kulit</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <div class="glass-card p-6 fade-in">
-          <div class="flex items-start mb-4">
-            <div class="icon-container">
-              <i class="fas fa-heart text-blue-600 text-xl"></i>
-            </div>
-            <div>
-              <h3 class="card-title">Pencegahan Diabetes</h3>
-              <ul class="feature-list">
-                <li>Menjaga pola makan sehat dan seimbang</li>
-                <li>Berolahraga secara teratur</li>
-                <li>Menjaga berat badan</li>
-                <li>Membatasi konsumsi gula dan karbohidrat sederhana</li>
-                <li>Memeriksa kadar gula darah secara berkala</li>
-                <li>Tidak merokok dan membatasi alkohol</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="glass-card p-8 text-center fade-in">
-        <h3 class="facts-title">Fakta Tentang Diabetes</h3>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div class="fact-card">
-            <div class="fact-number">463 Juta</div>
-            <p class="fact-description">Orang dewasa di dunia hidup menderita diabetes (2019)</p>
-          </div>
-          <div class="fact-card">
-            <div class="fact-number">4,2 Juta</div>
-            <p class="fact-description">Kematian disebabkan diabetes (2019)</p>
-          </div>
-           <div class="fact-card">
-            <div class="fact-number">12 Juta</div>
-            <p class="fact-description">Penderita diabetes di Indonesia (2020)</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Cara Kerja Sistem -->
-  <section class="workflow-section">
-    <div class="container mx-auto max-w-6xl">
-      <div class="text-center mb-12 fade-in">
-        <h2 class="section-title">Bagaimana Sistem Ini Bekerja?</h2>
-        <p class="section-subtitle">
-          Sistem pakar diagnosis diabetes menggunakan metode forward chaining untuk menganalisis gejala yang Anda alami.
-        </p>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div class="text-center fade-in">
-          <div class="step-icon">
-            <i class="fas fa-clipboard-list text-3xl text-blue-600"></i>
-          </div>
-          <h3 class="step-title">1. Identifikasi Gejala</h3>
-          <p class="step-description">Pilih gejala yang Anda alami dari daftar yang tersedia</p>
-        </div>
-
-        <div class="text-center fade-in">
-          <div class="step-icon">
-            <i class="fas fa-chart-line text-3xl text-blue-600"></i>
-          </div>
-          <h3 class="step-title">2. Analisis Cepat</h3>
-          <p class="step-description">Sistem menganalisis gejala menggunakan basis pengetahuan pakar</p>
-        </div>
-
-        <div class="text-center fade-in">
-          <div class="step-icon">
-            <i class="fas fa-file-medical text-3xl text-blue-600"></i>
-          </div>
-          <h3 class="step-title">3. Hasil & Rekomendasi</h3>
-          <p class="step-description">Dapatkan laporan risiko dan saran tindakan selanjutnya</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CTA Diagnosis -->
-  <section class="cta-section">
-    <div class="container mx-auto max-w-4xl text-center">
-      <div class="glass-card p-8 md:p-12 fade-in">
-        <h2 class="cta-title">Siap Memeriksa Kesehatan Anda?</h2>
-        <p class="cta-subtitle">
-          Diagnosis dini dapat membantu mencegah komplikasi serius dari diabetes. 
-          Sistem kami akan memberikan analisis awal berdasarkan gejala yang Anda alami.
-        </p>
-        <div class="info-box">
-          <h3 class="info-box-title">
-            <i class="fas fa-info-circle mr-2"></i> Penting untuk Diingat
-          </h3>
-          <p class="info-box-text">
-            Hasil diagnosis ini bersifat prediktif dan tidak menggantikan pemeriksaan dokter. 
-            Jika Anda mengalami gejala serius, segera konsultasikan dengan tenaga medis profesional.
+          <p class="text-lg md:text-xl opacity-95 max-w-2xl">
+            Teknologi sistem pakar yang membantu Anda melakukan pemeriksaan awal terhadap kemungkinan diabetes berdasarkan gejala klinis.
           </p>
         </div>
-        <a href="diagnosis.html" class="cta-button pulse-animation">
-          <i class="fas fa-stethoscope mr-3"></i> Mulai Diagnosis Sekarang
-        </a>
+      </div>
+
+      <div class="flex flex-col md:flex-row items-center mt-16 gap-10">
+        <div class="md:w-1/2 fade-in">
+          <div class="glass-card p-8">
+            <h3 class="text-2xl font-bold text-blue-800 mb-4 flex items-center">
+              <i class="fas fa-shield-alt mr-3 text-blue-600"></i> Urgensi Deteksi Dini
+            </h3>
+            <p class="text-gray-600 mb-8 leading-relaxed">
+              Diabetes yang tidak terdiagnosis adalah "silent killer". Dapat menyebabkan komplikasi serius seperti penyakit jantung, 
+              kerusakan ginjal, dan gangguan penglihatan. Deteksi dini adalah kunci pencegahan.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4">
+              <a href="diagnosis.html" class="btn-primary justify-center">
+                Mulai Diagnosis <i class="fas fa-arrow-right ml-2"></i>
+              </a>
+              <a href="#info" class="btn-secondary justify-center">
+                <i class="fas fa-info-circle mr-2"></i> Pelajari Dulu
+              </a>
+            </div>
+          </div>
+        </div>
+        
+        <div class="md:w-1/2 flex justify-center fade-in">
+          <div class="floating relative w-full max-w-md">
+            <img src="assets/olahraga.jpg" 
+                 alt="Gaya Hidup Sehat" 
+                 class="rounded-2xl shadow-2xl w-full object-cover h-64 md:h-80"
+                 loading="lazy">
+             <div class="absolute -bottom-6 -right-6 bg-white p-4 rounded-xl shadow-lg hidden md:block">
+                 <div class="flex items-center gap-3">
+                     <i class="fas fa-running text-blue-600 text-2xl"></i>
+                     <div>
+                         <p class="text-sm font-bold text-gray-800">Tetap Aktif</p>
+                         <p class="text-xs text-gray-500">Kunci kesehatan</p>
+                     </div>
+                 </div>
+             </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="container mx-auto max-w-6xl">
+  <section class="py-16 bg-blue-50">
+    <div class="container mx-auto max-w-6xl px-4">
+      <div class="text-center mb-10">
+          <h2 class="text-3xl font-bold text-blue-900">
+            <i class="fas fa-images mr-2 text-blue-600"></i> Fakta Visual Tentang Diabetes
+          </h2>
+          <p class="text-gray-600 mt-2">Gambaran penting dalam pengelolaan diabetes</p>
       </div>
-      <div class="footer-bottom">
-        <p>© 2025 Sistem Pakar Diagnosis Diabetes. All rights reserved.</p>
+      
+      <div class="carousel-container">
+        <div class="carousel-slide active">
+          <img src="assets/gula darah.jpg" 
+               alt="Monitoring Gula Darah" loading="lazy">
+          <div class="carousel-caption">
+            <h3 class="text-2xl font-bold mb-1">Pemantauan Gula Darah Rutin</h3>
+            <p class="text-blue-100">Kontrol rutin adalah fondasi pengelolaan diabetes</p>
+          </div>
+        </div>
+        
+        <div class="carousel-slide">
+          <img src="assets/MakananSehat.jpg" 
+               alt="Makanan Sehat" loading="lazy">
+          <div class="carousel-caption">
+            <h3 class="text-2xl font-bold mb-1">Pola Makan Sehat</h3>
+            <p class="text-blue-100">Nutrisi seimbang membantu menstabilkan gula darah</p>
+          </div>
+        </div>
+        
+        <div class="carousel-slide">
+          <img src="assets/konsultasi.jpg" 
+               alt="Konsultasi Dokter" loading="lazy">
+          <div class="carousel-caption">
+            <h3 class="text-2xl font-bold mb-1">Konsultasi Profesional</h3>
+            <p class="text-blue-100">Pemeriksaan medis rutin mencegah komplikasi</p>
+          </div>
+        </div>
+        
+        <div class="carousel-slide">
+          <img src="assets/aktivitas.jpeg" 
+               alt="Olahraga Rutin" loading="lazy">
+          <div class="carousel-caption">
+            <h3 class="text-2xl font-bold mb-1">Aktivitas Fisik Teratur</h3>
+            <p class="text-blue-100">Olahraga meningkatkan sensitivitas insulin tubuh</p>
+          </div>
+        </div>
+        
+        <button class="carousel-nav carousel-prev" onclick="prevSlide()"><i class="fas fa-chevron-left"></i></button>
+        <button class="carousel-nav carousel-next" onclick="nextSlide()"><i class="fas fa-chevron-right"></i></button>
+        
+        <div class="carousel-dots">
+          <span class="carousel-dot active" onclick="goToSlide(0)"></span>
+          <span class="carousel-dot" onclick="goToSlide(1)"></span>
+          <span class="carousel-dot" onclick="goToSlide(2)"></span>
+          <span class="carousel-dot" onclick="goToSlide(3)"></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="info" class="py-16 bg-white">
+    <div class="container mx-auto max-w-6xl px-4">
+      <div class="text-center mb-16 fade-in">
+        <h2 class="text-3xl font-bold text-gray-800 mb-4">Apa Itu Diabetes?</h2>
+        <p class="text-gray-600 max-w-3xl mx-auto leading-relaxed">
+          Diabetes adalah sindrom metabolik yang ditandai dengan kenaikan konsentrasi gula darah abnormal 
+          akibat defisiensi insulin, resistensi insulin, atau keduanya.
+        </p>
+      </div>
+
+      <div class="stats-image-grid">
+        <div class="stat-image-card fade-in">
+          <img src="assets/Gaya-Hidup-Sehat.jpg" 
+               alt="Pencegahan" loading="lazy">
+          <div class="stat-image-overlay">
+            <div class="text-5xl font-bold mb-2">70%</div>
+            <p class="text-lg font-medium">Kasus Tipe 2 dapat dicegah dengan gaya hidup sehat</p>
+          </div>
+        </div>
+        
+        <div class="stat-image-card fade-in" style="transition-delay: 0.1s;">
+          <img src="assets/statistic.webp" 
+               alt="Statistik Diagnosis" loading="lazy">
+          <div class="stat-image-overlay">
+            <div class="text-5xl font-bold mb-2">1 dari 9</div>
+            <p class="text-lg font-medium">Orang dewasa hidup dengan diabetes</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+        <div class="glass-card p-8 fade-in h-full flex flex-col justify-between">
+          <div>
+            <div class="flex items-start mb-6">
+              <div class="icon-container">
+                <i class="fas fa-exclamation-triangle text-amber-500 text-2xl"></i>
+              </div>
+              <div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">Faktor Risiko Utama</h3>
+                <ul class="feature-list text-gray-600">
+                  <li>Riwayat keluarga diabetes</li>
+                  <li>Kelebihan berat badan (Obesitas)</li>
+                  <li>Usia lanjut (>45 tahun)</li>
+                  <li>Gaya hidup sedenter (kurang gerak)</li>
+                  <li>Riwayat diabetes gestasional (hamil)</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          
+          <div class="mt-4 rounded-xl overflow-hidden shadow-md h-48 w-full">
+            <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=300&fit=crop&q=80" 
+                 alt="Ilustrasi Faktor Risiko" 
+                 class="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                 loading="lazy">
+          </div>
+        </div>
+
+        <div class="glass-card p-8 fade-in h-full flex flex-col justify-between">
+          <div>
+            <div class="flex items-start mb-6">
+              <div class="icon-container">
+                <i class="fas fa-heart text-red-500 text-2xl"></i>
+              </div>
+              <div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">Langkah Pencegahan</h3>
+                <ul class="feature-list text-gray-600">
+                  <li>Pola makan seimbang (rendah gula/lemak)</li>
+                  <li>Olahraga teratur (min. 30 menit/hari)</li>
+                  <li>Menjaga berat badan ideal</li>
+                  <li>Cek gula darah rutin</li>
+                  <li>Hindari rokok dan alkohol</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          
+          <div class="mt-4 rounded-xl overflow-hidden shadow-md h-48 w-full">
+            <img src="assets/makanan2.jpg" 
+                 alt="Makanan Sehat" 
+                 class="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                 loading="lazy">
+          </div>
+        </div>
+      </div>
+
+      <div class="image-grid">
+        <div class="image-card fade-in">
+          <img src="assets/konsultasi berkala.jpg" 
+               alt="Konsultasi" loading="lazy">
+          <div class="image-card-content">
+            <h4 class="font-bold text-lg mb-2 text-blue-800">Konsultasi Berkala</h4>
+            <p class="text-sm text-gray-600">Jangan tunggu sakit. Pemeriksaan rutin membantu deteksi dini.</p>
+          </div>
+        </div>
+        
+        <div class="image-card fade-in">
+          <img src="assets/stress.webp" 
+               alt="Manajemen Stres" loading="lazy">
+          <div class="image-card-content">
+            <h4 class="font-bold text-lg mb-2 text-blue-800">Kelola Stres</h4>
+            <p class="text-sm text-gray-600">Stres memicu hormon yang dapat menaikkan gula darah.</p>
+          </div>
+        </div>
+        
+        <div class="image-card fade-in">
+          <img src="assets/pengecekan.jpg" 
+               alt="Monitoring" loading="lazy">
+          <div class="image-card-content">
+            <h4 class="font-bold text-lg mb-2 text-blue-800">Pantau Teratur</h4>
+            <p class="text-sm text-gray-600">Kenali angka gula darah Anda untuk tindakan yang tepat.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-card p-8 text-center fade-in mt-16 bg-blue-50 border-blue-100">
+        <h3 class="text-xl font-bold text-gray-800 mb-8">Fakta Global Diabetes</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div class="p-4">
+            <div class="text-4xl font-extrabold text-blue-600 mb-2">589 Juta</div>
+            <p class="text-gray-600 text-sm">Orang dewasa hidup dengan diabetes (2025)</p>
+          </div>
+          <div class="p-4 border-l-0 md:border-l border-r-0 md:border-r border-gray-200">
+            <div class="text-4xl font-extrabold text-red-500 mb-2">3,4 Juta</div>
+            <p class="text-gray-600 text-sm">Kematian disebabkan diabetes (2025)</p>
+          </div>
+           <div class="p-4">
+            <div class="text-4xl font-extrabold text-blue-600 mb-2">19,5 Juta+</div>
+            <p class="text-gray-600 text-sm">Penderita diabetes di Indonesia (2021)</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-16 bg-slate-50">
+    <div class="container mx-auto max-w-6xl px-4">
+      <div class="text-center mb-12 fade-in">
+        <h2 class="text-3xl font-bold text-gray-800 mb-3">Cara Kerja Sistem</h2>
+        <p class="text-gray-600">Metode Forward Chaining menganalisis gejala Anda secara sistematis.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+        <div class="hidden md:block absolute top-1/3 left-0 right-0 h-1 bg-gray-200 -z-0 transform -translate-y-1/2 mx-20"></div>
+
+        <div class="text-center fade-in bg-white p-6 rounded-2xl shadow-sm z-10 relative">
+          <div class="mb-6 rounded-xl overflow-hidden shadow-md h-40">
+            <img src="assets/gula darah.jpg" 
+                 alt="Input Gejala" class="w-full h-full object-cover" loading="lazy">
+          </div>
+          <div class="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center mx-auto mb-3 font-bold">1</div>
+          <h3 class="text-lg font-bold mb-2">Pilih Gejala</h3>
+          <p class="text-sm text-gray-500">Centang keluhan yang Anda rasakan pada form diagnosis.</p>
+        </div>
+
+        <div class="text-center fade-in bg-white p-6 rounded-2xl shadow-sm z-10 relative">
+          <div class="mb-6 rounded-xl overflow-hidden shadow-md h-40">
+            <img src="assets/konsultasi.jpg" 
+                 alt="Analisis AI" class="w-full h-full object-cover" loading="lazy">
+          </div>
+          <div class="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center mx-auto mb-3 font-bold">2</div>
+          <h3 class="text-lg font-bold mb-2">Analisis Sistem</h3>
+          <p class="text-sm text-gray-500">Algoritma mencocokkan gejala dengan basis pengetahuan pakar.</p>
+        </div>
+
+        <div class="text-center fade-in bg-white p-6 rounded-2xl shadow-sm z-10 relative">
+          <div class="mb-6 rounded-xl overflow-hidden shadow-md h-40">
+            <img src="assets/laporan.png" 
+                 alt="Hasil" class="w-full h-full object-cover" loading="lazy">
+          </div>
+          <div class="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center mx-auto mb-3 font-bold">3</div>
+          <h3 class="text-lg font-bold mb-2">Hasil & Saran</h3>
+          <p class="text-sm text-gray-500">Terima tingkat risiko dan rekomendasi medis.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-16">
+    <div class="container mx-auto max-w-5xl px-4">
+      <div class="glass-card p-8 md:p-12 fade-in bg-gradient-to-br from-white to-blue-50">
+        <div class="flex flex-col md:flex-row items-center gap-12">
+          <div class="md:w-1/2 text-left">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4">Siap Cek Kesehatan?</h2>
+            <p class="text-gray-600 mb-6">
+              Hanya butuh waktu kurang dari 5 menit. Ketahui risiko Anda lebih awal untuk penanganan yang lebih baik.
+            </p>
+            
+            <div class="bg-blue-100 border-l-4 border-blue-500 p-4 mb-8 rounded-r-lg">
+              <h3 class="text-sm font-bold text-blue-800 mb-1">
+                <i class="fas fa-info-circle mr-1"></i> Disclaimer
+              </h3>
+              <p class="text-xs text-blue-700">
+                Hasil diagnosis sistem ini adalah prediksi awal, bukan pengganti diagnosis dokter profesional.
+              </p>
+            </div>
+            
+            <a href="diagnosis.html" class="cta-button inline-flex items-center group">
+              <i class="fas fa-stethoscope mr-3 group-hover:rotate-12 transition-transform"></i> Mulai Diagnosis Sekarang
+            </a>
+          </div>
+          
+          <div class="md:w-1/2 w-full">
+            <div class="relative">
+                <div class="absolute inset-0 bg-blue-600 blur-2xl opacity-20 rounded-full"></div>
+                <img src="assets/Diagnosis-Dokter.jpg" 
+                     alt="Ilustrasi Diagnosis" 
+                     class="relative rounded-2xl shadow-xl w-full transform rotate-2 hover:rotate-0 transition-all duration-500"
+                     loading="lazy">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="bg-gray-900 text-white pt-16 pb-8">
+    <div class="container mx-auto max-w-6xl px-4">
+      <div class="mb-12">
+        <h4 class="text-center text-xl font-semibold mb-8 text-gray-300">Galeri Hidup Sehat</h4>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          <div class="text-center group">
+            <div class="footer-img-container">
+                <img src="assets/Gaya-Hidup-Sehat.jpg" 
+                     alt="Hidup Sehat" class="group-hover:scale-110 transition-transform duration-500" loading="lazy">
+            </div>
+            <p class="text-xs text-gray-400 mt-2">Pola Hidup Sehat</p>
+          </div>
+          
+          <div class="text-center group">
+            <div class="footer-img-container">
+                <img src="assets/olahraga.jpg" 
+                     alt="Aktivitas" class="group-hover:scale-110 transition-transform duration-500" loading="lazy">
+            </div>
+            <p class="text-xs text-gray-400 mt-2">Olahraga Teratur</p>
+          </div>
+          
+          <div class="text-center group">
+             <div class="footer-img-container">
+                <img src="assets/makanan2.jpg" 
+                     alt="Nutrisi" class="group-hover:scale-110 transition-transform duration-500" loading="lazy">
+            </div>
+            <p class="text-xs text-gray-400 mt-2">Nutrisi Seimbang</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="border-t border-gray-800 pt-8 text-center">
+        <p class="font-medium">© 2025 Sistem Pakar Diagnosis Diabetes.</p>
+        <p class="text-xs text-gray-500 mt-2">
+          Gambar oleh <a href="https://unsplash.com" target="_blank" class="hover:text-white transition-colors">Unsplash</a> | 
+          Dibuat untuk tujuan edukasi kesehatan
+        </p>
       </div>
     </div>
   </footer>
 
   <script>
-    // Animasi scroll halus untuk tautan navigasi
+    // Carousel Logic (Tidak diubah fungsinya, hanya memastikan smooth)
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.carousel-slide');
+    const dots = document.querySelectorAll('.carousel-dot');
+    
+    function showSlide(n) {
+      slides.forEach(slide => slide.classList.remove('active'));
+      dots.forEach(dot => dot.classList.remove('active'));
+      
+      currentSlide = (n + slides.length) % slides.length;
+      slides[currentSlide].classList.add('active');
+      dots[currentSlide].classList.add('active');
+    }
+    
+    function nextSlide() {
+      showSlide(currentSlide + 1);
+    }
+    
+    function prevSlide() {
+      showSlide(currentSlide - 1);
+    }
+    
+    function goToSlide(n) {
+      showSlide(n);
+    }
+    
+    // Auto slide
+    let slideInterval = setInterval(nextSlide, 5000);
+    
+    // Pause on hover (User Experience improvement)
+    const carouselContainer = document.querySelector('.carousel-container');
+    carouselContainer.addEventListener('mouseenter', () => clearInterval(slideInterval));
+    carouselContainer.addEventListener('mouseleave', () => slideInterval = setInterval(nextSlide, 5000));
+    
+    // Smooth Scroll
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       anchor.addEventListener('click', function (e) {
         e.preventDefault();
@@ -211,6 +787,23 @@
         }
       });
     });
+    
+    // Scroll Animation (Intersection Observer is better for performance than scroll listener)
+    const observerOptions = {
+      threshold: 0.1
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          // Optional: Stop observing once visible if you don't want it to fade out again
+          // observer.unobserve(entry.target); 
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
   </script>
 </body>
 </html>
