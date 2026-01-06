@@ -8,32 +8,26 @@ const fs = require('fs');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// ==================== LOG ====================
+app.use((req, res, next) => {
+    console.log(`[${req.method}] ${req.url}`);
+    next();
+});
+
 // ==================== MIDDLEWARE ====================
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// ==================== ROOT ROUTE (WAJIB UNTUK RAILWAY) ====================
+// ⭐ ==================== ROOT ROUTE (WAJIB UNTUK RAILWAY) ====================
 app.get('/', (req, res) => {
     res.status(200).send('🚀 Diabetes Diagnosis API is running');
 });
 
-// ==================== HEALTH CHECK ====================
-app.get('/health', (req, res) => {
-    res.status(200).json({
-        status: 'ok',
-        uptime: process.uptime(),
-        timestamp: new Date().toISOString()
-    });
-});
-
-// ==================== STATIC FRONTEND (OPSIONAL) ====================
+// ==================== STATIC FRONTEND ====================
 const staticPath = path.join(__dirname, '../frontend');
 if (fs.existsSync(staticPath)) {
-    console.log('✅ Frontend folder found');
-    app.use('/frontend', express.static(staticPath));
-} else {
-    console.log('⚠️ Frontend folder not found');
+    app.use(express.static(staticPath));
 }
 
 // ==================== MOCK DATABASE ====================
@@ -58,6 +52,12 @@ const mockDB = {
                     { id: 2, kode_gejala: 'G02', nama_gejala: 'Sering Buang Air', bobot: 3 },
                     { id: 3, kode_gejala: 'G03', nama_gejala: 'Lelah Berlebihan', bobot: 2 }
                 ]);
+            } else if (
+                sql.includes('INSERT') ||
+                sql.includes('UPDATE') ||
+                sql.includes('DELETE')
+            ) {
+                callback(null, { insertId: 1, affectedRows: 1 });
             } else {
                 callback(null, []);
             }
@@ -73,21 +73,26 @@ const executeQuery = (sql, params = []) =>
         });
     });
 
-// ==================== API ENDPOINTS ====================
-
-// Test DB
-app.get('/test-db', async (req, res) => {
-    const result = await executeQuery('SELECT 1 + 1 AS result');
-    res.json({ success: true, data: result[0] });
+// ==================== HEALTH CHECK ====================
+app.get('/health', (req, res) => {
+    res.json({ status: 'healthy' });
 });
 
-// Admin login
+// ==================== API ENDPOINTS ====================
+
+// TEST DB
+app.get('/test-db', async (req, res) => {
+    const result = await executeQuery('SELECT 1 + 1 AS result');
+    res.json(result[0]);
+});
+
+// ADMIN LOGIN
+app.get('/admin/login', (req, res) => {
+    res.json({ message: 'Gunakan POST' });
+});
+
 app.post('/admin/login', async (req, res) => {
     const { name, sandi } = req.body;
-    if (!name || !sandi) {
-        return res.status(400).json({ error: 'Name & sandi required' });
-    }
-
     const admins = await executeQuery('SELECT * FROM admin');
     const admin = admins.find(a => a.name === name && a.sandi == sandi);
 
@@ -98,19 +103,19 @@ app.post('/admin/login', async (req, res) => {
     res.json({ success: true, admin });
 });
 
-// Users
+// USERS
 app.get('/api/users', async (req, res) => {
     const users = await executeQuery('SELECT * FROM users');
     res.json(users);
 });
 
-// Symptoms
+// SYMPTOMS
 app.get('/api/symptoms', async (req, res) => {
     const symptoms = await executeQuery('SELECT * FROM symptoms');
     res.json(symptoms);
 });
 
-// Diagnosis
+// DIAGNOSIS
 app.post('/api/diagnosis/process', async (req, res) => {
     const { symptoms = [] } = req.body;
     const score = symptoms.length * 20;
@@ -120,25 +125,44 @@ app.post('/api/diagnosis/process', async (req, res) => {
     else if (score > 40) risk = 'Sedang';
 
     res.json({
-        success: true,
         skor: score,
         risiko: risk,
-        rekomendasi: 'Silakan konsultasi ke dokter'
+        rekomendasi: 'Periksa ke dokter'
     });
 });
 
-// ==================== 404 HANDLER ====================
+// HISTORY
+app.get('/api/diagnoses', async (req, res) => {
+    res.json([]);
+});
+
+// RECOMMENDATIONS
+app.get('/api/recommendations', async (req, res) => {
+    res.json([]);
+});
+
+// INFO
+app.get('/api/info', (req, res) => {
+    res.json({
+        service: 'Diabetes Diagnosis System',
+        status: 'online'
+    });
+});
+
+// STATS
+app.get('/api/stats', (req, res) => {
+    res.json({
+        total_users: 15,
+        total_diagnoses: 42
+    });
+});
+
+// ==================== 404 ====================
 app.use((req, res) => {
-    res.status(404).json({
-        error: 'Endpoint not found'
-    });
+    res.status(404).json({ error: 'Endpoint tidak ditemukan' });
 });
 
-// ==================== START SERVER ====================
+// ==================== START ====================
 app.listen(PORT, '0.0.0.0', () => {
-    console.log('='.repeat(50));
-    console.log('🚀 Diabetes Diagnosis API RUNNING');
-    console.log(`📍 Port : ${PORT}`);
-    console.log(`🌐 URL  : http://localhost:${PORT}`);
-    console.log('='.repeat(50));
+    console.log('🚀 Server running on port', PORT);
 });
