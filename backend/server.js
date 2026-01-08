@@ -3,25 +3,53 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
+const mysql = require('mysql2'); // Wajib pakai mysql2
 
 // ==================== INIT ====================
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// ==================== LOG ====================
-app.use((req, res, next) => {
-    console.log(`[${req.method}] ${req.url}`);
-    next();
+// ==================== DATABASE CONNECTION (REAL) ====================
+// Mengambil variabel dari Railway Environment
+const pool = mysql.createPool({
+    host: process.env.MYSQLHOST,
+    user: process.env.MYSQLUSER,
+    password: process.env.MYSQLPASSWORD,
+    database: process.env.MYSQLDATABASE,
+    port: process.env.MYSQLPORT,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
 });
+
+// Helper untuk menjalankan query dengan Promise
+const executeQuery = (sql, params = []) => {
+    return new Promise((resolve, reject) => {
+        pool.query(sql, params, (err, results) => {
+            if (err) {
+                console.error("❌ Database Error:", err.message);
+                reject(err);
+            } else {
+                resolve(results);
+            }
+        });
+    });
+};
 
 // ==================== MIDDLEWARE ====================
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// ⭐ ==================== ROOT ROUTE (WAJIB UNTUK RAILWAY) ====================
+// Log setiap request yang masuk
+app.use((req, res, next) => {
+    console.log(`[${req.method}] ${req.url}`);
+    next();
+});
+
+// ==================== ROOT ROUTE ====================
 app.get('/', (req, res) => {
-    res.status(200).send('🚀 Diabetes Diagnosis API is running');
+    res.status(200).send('🚀 Diabetes Diagnosis API is running on Railway');
 });
 
 // ==================== STATIC FRONTEND ====================
@@ -30,94 +58,59 @@ if (fs.existsSync(staticPath)) {
     app.use(express.static(staticPath));
 }
 
-// ==================== MOCK DATABASE ====================
-const mockDB = {
-    query: (sql, params, callback) => {
-        setTimeout(() => {
-            if (sql.includes('SELECT 1 + 1')) {
-                callback(null, [{ result: 2 }]);
-            } else if (sql.includes('admin')) {
-                callback(null, [
-                    { name: 'admin', sandi: 111111 },
-                    { name: 'inay', sandi: 111111 }
-                ]);
-            } else if (sql.includes('users')) {
-                callback(null, [
-                    { id: 1, nama_lengkap: 'John Doe', usia: 30, jenis_kelamin: 'L' },
-                    { id: 2, nama_lengkap: 'Jane Smith', usia: 25, jenis_kelamin: 'P' }
-                ]);
-            } else if (sql.includes('symptoms')) {
-                callback(null, [
-                    { id: 1, kode_gejala: 'G01', nama_gejala: 'Sering Haus', bobot: 2 },
-                    { id: 2, kode_gejala: 'G02', nama_gejala: 'Sering Buang Air', bobot: 3 },
-                    { id: 3, kode_gejala: 'G03', nama_gejala: 'Lelah Berlebihan', bobot: 2 }
-                ]);
-            } else if (
-                sql.includes('INSERT') ||
-                sql.includes('UPDATE') ||
-                sql.includes('DELETE')
-            ) {
-                callback(null, { insertId: 1, affectedRows: 1 });
-            } else {
-                callback(null, []);
-            }
-        }, 50);
-    }
-};
-
-const executeQuery = (sql, params = []) =>
-    new Promise((resolve, reject) => {
-        mockDB.query(sql, params, (err, results) => {
-            if (err) reject(err);
-            else resolve(results);
-        });
-    });
-
-// ==================== HEALTH CHECK ====================
-app.get('/health', (req, res) => {
-    res.json({ status: 'healthy' });
-});
-
 // ==================== API ENDPOINTS ====================
 
-// TEST DB
+// 1. TEST KONEKSI DB
 app.get('/test-db', async (req, res) => {
-    const result = await executeQuery('SELECT 1 + 1 AS result');
-    res.json(result[0]);
+    try {
+        const result = await executeQuery('SELECT 1 + 1 AS result');
+        res.json({ status: 'Connected', data: result[0] });
+    } catch (error) {
+        res.status(500).json({ status: 'Error', message: error.message });
+    }
 });
 
-// ADMIN LOGIN
-app.get('/admin/login', (req, res) => {
-    res.json({ message: 'Gunakan POST' });
-});
-
+// 2. ADMIN LOGIN (Real Check to DB)
 app.post('/admin/login', async (req, res) => {
     const { name, sandi } = req.body;
-    const admins = await executeQuery('SELECT * FROM admin');
-    const admin = admins.find(a => a.name === name && a.sandi == sandi);
+    try {
+        const sql = 'SELECT * FROM admin WHERE name = ? AND sandi = ?';
+        const results = await executeQuery(sql, [name, sandi]);
 
-    if (!admin) {
-        return res.status(401).json({ error: 'Login gagal' });
+        if (results.length === 0) {
+            return res.status(401).json({ error: 'Username atau Password salah' });
+        }
+
+        res.json({ success: true, admin: results[0] });
+    } catch (error) {
+        res.status(500).json({ error: 'Database connection failed' });
     }
-
-    res.json({ success: true, admin });
 });
 
-// USERS
+// 3. GET ALL USERS
 app.get('/api/users', async (req, res) => {
-    const users = await executeQuery('SELECT * FROM users');
-    res.json(users);
+    try {
+        const users = await executeQuery('SELECT * FROM users');
+        res.json(users);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 });
 
-// SYMPTOMS
+// 4. GET ALL SYMPTOMS
 app.get('/api/symptoms', async (req, res) => {
-    const symptoms = await executeQuery('SELECT * FROM symptoms');
-    res.json(symptoms);
+    try {
+        const symptoms = await executeQuery('SELECT * FROM symptoms');
+        res.json(symptoms);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 });
 
-// DIAGNOSIS
+// 5. DIAGNOSIS PROCESS (Bisa dikembangkan sesuai logika pakar kamu)
 app.post('/api/diagnosis/process', async (req, res) => {
     const { symptoms = [] } = req.body;
+    // Contoh logika sederhana (Skor berdasarkan jumlah gejala)
     const score = symptoms.length * 20;
 
     let risk = 'Rendah';
@@ -127,42 +120,21 @@ app.post('/api/diagnosis/process', async (req, res) => {
     res.json({
         skor: score,
         risiko: risk,
-        rekomendasi: 'Periksa ke dokter'
+        rekomendasi: 'Segera konsultasikan dengan dokter spesialis dalam.'
     });
 });
 
-// HISTORY
-app.get('/api/diagnoses', async (req, res) => {
-    res.json([]);
+// 6. HEALTH CHECK
+app.get('/health', (req, res) => {
+    res.json({ status: 'healthy', timestamp: new Date() });
 });
 
-// RECOMMENDATIONS
-app.get('/api/recommendations', async (req, res) => {
-    res.json([]);
-});
-
-// INFO
-app.get('/api/info', (req, res) => {
-    res.json({
-        service: 'Diabetes Diagnosis System',
-        status: 'online'
-    });
-});
-
-// STATS
-app.get('/api/stats', (req, res) => {
-    res.json({
-        total_users: 15,
-        total_diagnoses: 42
-    });
-});
-
-// ==================== 404 ====================
+// ==================== 404 HANDLER ====================
 app.use((req, res) => {
     res.status(404).json({ error: 'Endpoint tidak ditemukan' });
 });
 
-// ==================== START ====================
+// ==================== START SERVER ====================
 app.listen(PORT, '0.0.0.0', () => {
-    console.log('🚀 Server running on port', PORT);
+    console.log(`🚀 Server is live on port ${PORT}`);
 });
