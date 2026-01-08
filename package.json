@@ -1,23 +1,15 @@
 {
   "name": "sistem-diagnosa",
   "version": "1.0.0",
-  "description": "Diabetes Diagnosis System",
+  "description": "Sistem Pakar Diagnosis Diabetes",
   "main": "backend/server.js",
   "scripts": {
     "start": "node backend/server.js",
-    "dev": "nodemon backend/server.js",
-    "setup-db": "node backend/setup-database.js",
-    "test": "echo \"No tests specified\" && exit 0"
+    "dev": "nodemon backend/server.js"
   },
   "dependencies": {
-    "express": "^4.18.2",
     "cors": "^2.8.5",
-    "mysql2": "^3.0.0"
-  },
-  "devDependencies": {
-    "nodemon": "^3.0.0"
-  },
-  "engines": {
-    "node": ">=16.0.0"
+    "express": "^4.18.2",
+    "mysql2": "^3.6.0"
   }
 }
