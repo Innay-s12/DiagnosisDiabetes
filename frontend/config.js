@@ -1,113 +1,76 @@
-// frontend/js/config.js
-// Konfigurasi API untuk semua halaman
-
-const API_CONFIG = {
-    // Base URL otomatis berdasarkan environment
-    BASE_URL: window.location.hostname === 'localhost' 
-        ? 'http://localhost:8000' 
-        : 'https://your-backend-api.com', // Ganti dengan URL backend production Anda
+// config.js - API Configuration
+(function() {
+    // Base URL - Sesuaikan dengan environment
+    const isLocalhost = window.location.hostname === 'localhost' || 
+                        window.location.hostname === '127.0.0.1';
     
-    // Semua endpoint API (SESUAI DENGAN BACKEND KITA)
-    ENDPOINTS: {
-        // Authentication
-        ADMIN_LOGIN: '/admin/login',
-        
-        // Data endpoints (SESUAI server.js kita)
-        USERS: '/users',
-        USER_DETAIL: (id) => `/users/${id}`,
-        
-        SYMPTOMS: '/symptoms',
-        SYMPTOM_DETAIL: (id) => `/symptoms/${id}`,
-        
-        DIAGNOSES: '/diagnoses',
-        DIAGNOSIS_DETAIL: (id) => `/diagnoses/${id}`,
-        
-        DISEASES: '/diseases',
-        DISEASE_DETAIL: (id) => `/disease/${id}`,
-        
-        RECOMMENDATIONS: '/recommendations',
-        RECOMMENDATION_DETAIL: (id) => `/recommendations/${id}`,
-        
-        USER_SYMPTOMS: '/user_symptoms',
-        USER_SYMPTOMS_BY_USER: (userId) => `/user/${userId}/symptoms`,
-        
-        // Test & Stats
+    const BASE_URL = isLocalhost 
+        ? 'http://localhost:3000' 
+        : window.location.origin; // Untuk production
+    
+    // API Endpoints
+    const ENDPOINTS = {
+        USERS: '/api/users',
+        DIAGNOSES: '/api/diagnoses',
+        RECOMMENDATIONS: '/api/recommendations',
+        SYMPTOMS: '/api/symptoms',
+        STATS: '/api/stats',
         TEST_DB: '/test-db',
-        STATS: '/stats'
-    },
+        HEALTH: '/health',
+        LOGIN: '/admin/login',
+        PROCESS_DIAGNOSIS: '/api/diagnosis/process'
+    };
     
-    // Helper functions
-    getUrl(endpoint) {
-        return this.BASE_URL + endpoint;
-    },
-    
-    async fetchApi(endpoint, options = {}) {
-        const url = this.getUrl(endpoint);
-        
+    // Helper function untuk fetch API
+    async function fetchApi(endpoint, options = {}) {
+        const url = BASE_URL + endpoint;
         const defaultOptions = {
             headers: {
                 'Content-Type': 'application/json',
-                ...options.headers
-            },
-            credentials: 'include' // Untuk session cookies jika digunakan
+                'Accept': 'application/json'
+            }
         };
         
+        const mergedOptions = { ...defaultOptions, ...options };
+        
         try {
-            console.log(`📡 API Request: ${url}`, options);
-            const response = await fetch(url, { ...defaultOptions, ...options });
-            
-            console.log(`📡 API Response Status: ${response.status} ${response.statusText}`);
+            console.log(`🔗 Fetching: ${url}`);
+            const response = await fetch(url, mergedOptions);
             
             if (!response.ok) {
                 const errorText = await response.text();
-                console.error(`❌ API Error:`, errorText);
-                throw new Error(`HTTP ${response.status}: ${response.statusText} - ${errorText}`);
+                console.error(`❌ API Error ${response.status}:`, errorText);
+                throw new Error(`HTTP ${response.status}: ${errorText}`);
             }
             
             const data = await response.json();
-            console.log(`✅ API Success:`, data);
             return data;
+            
         } catch (error) {
-            console.error(`❌ API Error (${endpoint}):`, error);
+            console.error(`❌ Fetch error for ${endpoint}:`, error.message);
+            
+            // Return empty array/object as fallback for dashboard
+            if (endpoint === ENDPOINTS.STATS) {
+                return {
+                    total_users: 0,
+                    total_diagnoses: 0,
+                    total_symptoms: 0,
+                    total_recommendations: 0
+                };
+            } else if ([ENDPOINTS.USERS, ENDPOINTS.DIAGNOSES, ENDPOINTS.SYMPTOMS, ENDPOINTS.RECOMMENDATIONS].includes(endpoint)) {
+                return [];
+            }
+            
             throw error;
         }
-    },
-    
-    // Helper untuk method khusus
-    async get(endpoint) {
-        return this.fetchApi(endpoint, { method: 'GET' });
-    },
-    
-    async post(endpoint, data) {
-        return this.fetchApi(endpoint, {
-            method: 'POST',
-            body: JSON.stringify(data)
-        });
-    },
-    
-    async put(endpoint, data) {
-        return this.fetchApi(endpoint, {
-            method: 'PUT',
-            body: JSON.stringify(data)
-        });
-    },
-    
-    async delete(endpoint) {
-        return this.fetchApi(endpoint, { method: 'DELETE' });
     }
-};
-
-// Buat global untuk mudah diakses
-window.API_CONFIG = API_CONFIG;
-
-// Juga export untuk ES6 modules jika diperlukan
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = API_CONFIG;
-}
-
-// Debug info
-console.log('🔧 API Config loaded:', {
-    BASE_URL: API_CONFIG.BASE_URL,
-    currentHostname: window.location.hostname,
-    currentOrigin: window.location.origin
-});
+    
+    // Export ke window object
+    window.API_CONFIG = {
+        BASE_URL,
+        ENDPOINTS,
+        fetchApi
+    };
+    
+    console.log('✅ API Config loaded:', { BASE_URL, ENDPOINTS });
+})();
